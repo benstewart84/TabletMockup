@@ -1,0 +1,123 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<br />
+<blockquote>
+    <p>Assumed workflow is that the supplier has already logged into the Supplier portal to get here</p>
+</blockquote>
+
+
+<div class="container">
+    <h2>Outstanding Jobs at 1234</h2>
+    <p>Table should show <mark>all</mark> jobs which the supplier currently not closed (Called Out, In Progress) at the store:</p>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Job Number</th>
+                <th>Fault Service</th>
+                <th>Fault Type</th>
+                <th>Note</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>19872718</td>
+                <td>Bakery</td>
+                <td>Power Out</td>
+                <td>colleague at store says no power going to the oven</td>
+                <td>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#myModal">Begin Work</button>
+                </td>
+            </tr>
+            <tr>
+                <td>19872456</td>
+                <td>Bakery</td>
+                <td>Overheating</td>
+                <td>it's too warm. melted someones glove</td>
+                <td>
+                    <button type="button" class="btn btn-success btn-sm">Begin Work</button>
+                </td>
+            </tr>
+            <tr>
+                <td>19872166</td>
+                <td>Bakery</td>
+                <td>Cold</td>
+                <td>MOD said the oven is "pure baltic"</td>
+                <td>
+                    <button type="button" class="btn btn-success btn-sm">Begin Work</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<blockquote>
+    <p>Engineer logs in again, after having began work he only gets that option</p>
+</blockquote>
+
+<div class="container">
+    <h2>Outstanding Jobs at 1234</h2>
+    <p>State on all buttons should now have changed so that only the active one is enabled:</p>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Job Number</th>
+                <th>Fault Service</th>
+                <th>Fault Type</th>
+                <th>Note</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr  class="active">
+                <td>19872718</td>
+                <td>Bakery</td>
+                <td>Power Out</td>
+                <td>colleague at store says no power going to the oven</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm">Stop Work</button>
+                </td>
+            </tr>
+            <tr>
+                <td>19872456</td>
+                <td>Bakery</td>
+                <td>Overheating</td>
+                <td>it's too warm. melted someones glove</td>
+                <td>
+                    <button type="button" class="btn btn-success btn-sm" disabled="disabled">Begin Work</button>
+                </td>
+            </tr>
+            <tr>
+                <td>19872166</td>
+                <td>Bakery</td>
+                <td>Cold</td>
+                <td>MOD said the oven is "pure baltic"</td>
+                <td>
+                    <button type="button" class="btn btn-success btn-sm" disabled="disabled">Begin Work</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Begin Work</h4>
+            </div>
+            <div class="modal-body">
+                <p>You are now registering as working on this job, please return and update this job status when you are finished with this job. You will be autologged out in 10 seconds.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>

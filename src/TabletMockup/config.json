@@ -1,0 +1,10 @@
+{
+  "AppSettings": {
+    "SiteTitle": "TabletMockup"
+  },
+  "Data": {
+    "DefaultConnection": {
+      "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnet5-TabletMockup-d2719fbc-c783-46db-af7e-0995ce63cf19;Trusted_Connection=True;MultipleActiveResultSets=true"
+    }
+  }
+}
