@@ -1,0 +1,32 @@
+﻿@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.SelectUserModel
+@if (ViewBag.Prompt != null)
+{
+    <input type="hidden" id="ActionPrompt" value="@ViewBag.Prompt"/>
+}
+@Html.HiddenFor(m=>m.SelectedUser)
+<table id="user-selection-table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Company/Name</th>
+                <th>Role</th>
+                <th name="NonJsSelect">Select</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.UserProfiles)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@(user.HelpdeskResource == null ? string.Empty : user.HelpdeskResource.Name)</td>
+                    <td>@Html.AsCommaSeparatedList(user.Roles, role => role.RoleName)</td>
+                    <td name="NonJsSelect">@Html.RadioButtonFor(m=>m.SelectedUser,user.UserName)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <br name="NonJsSelect" />
+    <input type="submit" class="btn btn-primary" value="Continue" name="NonJsSelect" @if (ViewBag.Prompt != null) { @: onclick="@string.Format("return confirm('{0}?')",ViewBag.Prompt)"
+                                                                    } />

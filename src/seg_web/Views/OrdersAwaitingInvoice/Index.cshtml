@@ -1,0 +1,61 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.OrdersAwaitingInvoice.OrdersAwaitingInvoiceViewModel
+@{
+    ViewBag.Title = "Orders Awaiting Invoice";
+    ViewBag.MenuSection = "invoices-menu";
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+                <table id="awaiting-invoice" class="responsive clicktable" data-empty-table="There are no orders awaiting invoice">
+                    <thead>
+                        <tr>
+                            <th>Order Ref</th>
+                            <th>Supplier</th>
+                            <th>Supplier Ref</th>
+                            <th>Job Ref</th>
+                            @*<th>Type</th>
+                            <th>Alarm Date</th>*@
+                            <th>Job Date</th>
+                            <th>Order Date</th>
+                            <th>Order Value ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Orders)
+                        {
+                            <tr>
+                                <td>@item.WorkOrderRef</td>
+                                <td>@item.SupplierName</td>
+                                <td>@item.SupplierRef</td>
+                                <td>@(item.JobRef == 0 ? "N/A" : string.Format("{0:0}", item.JobRef))</td>
+                                @*<td>@(item.JobRef == 0 ? "N/A" : item.IsPpm ? "PPM" : "Reactive")</td>
+                                <td>@((item.AlarmDate == null || item.AlarmDate.GetValueOrDefault().Year == 1900) ? "N/A" : item.AlarmDate.ToCurrentCultureDateTime())</td>*@
+                                <td>@((item.DateJobClosed == null || item.DateJobClosed.GetValueOrDefault().Year == 1900) ? "N/A" : item.DateJobClosed.ToCurrentCultureDateTime())</td>
+                                <td>@((item.OrderDate == null || item.OrderDate.GetValueOrDefault().Year == 1900) ? "N/A" : item.OrderDate.ToCurrentCultureShortDate())</td>
+                                <td>@Html.DecimalToCurrencyString(item.GrossAmount)</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+
+                @helper GetContractorRefs(int faultId, string supplierCode)
+                {
+                    var supplier = Model.SupplierLookup[supplierCode].FirstOrDefault();
+                    if (supplier != null)
+                    {
+                        var contractorRefs = Model.ContractorJobRefLookup[faultId].Where(ft => ft.HelpdeskResourceId == supplier.ManagedResourceId).ToList();
+                        @:@contractorRefs.AsCommaSeparatedList(cr => cr.ContractorRef)
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

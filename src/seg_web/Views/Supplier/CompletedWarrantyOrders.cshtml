@@ -1,0 +1,50 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.SuppliersCompletedWarrantyOrdersModel
+
+@{
+    ViewBag.Title = "Completed Non-chargeable jobs";
+    ViewBag.MenuSection = "job-menu";
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+
+                <table id="supplier-warranty-work-orders" data-empty-table="There are no completed Non-chargeable jobs">
+                    <thead>
+                        <tr>
+                            <th class="w15">Work Order Ref</th>
+                            <th class="w15">Job Ref</th>
+                            <th class="w15">Asset Number</th>
+                            <th class="w20">Supplier Ref</th>
+                            <th class="w20">Site</th>
+                            <th class="w15">Job Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.CompletedWorkOrders != null)
+                        {
+                            foreach (var item in Model.CompletedWorkOrders)
+                            {
+                                <tr>
+                                    <td class="w15">@Html.TextOrEmptyString(item.WorkOrderRef)</td>
+                                    <td class="w15">@Html.IntOrEmptyString(item.JobRef)</td>
+                                    <td class="w15">@Html.TextOrEmptyString(item.AssetTag)</td>
+                                    <td class="w20">@Model.ContractorJobRefLookup[item.JobRef].AsCommaSeparatedList()</td>
+                                    <td class="w20">@Html.TextOrEmptyString(@item.SiteName)</td>
+                                    <td class="w15">@Html.TextOrEmptyString(@item.AlarmDate.ToCurrentCultureDateTime())</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

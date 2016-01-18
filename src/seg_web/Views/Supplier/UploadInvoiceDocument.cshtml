@@ -1,0 +1,28 @@
+﻿@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.UploadFileViewModel
+
+@{
+    ViewBag.Title = "Upload Invoice Document";
+    ViewBag.MenuSection = "invoices-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>Upload @Html.InvoiceDocumentTypeText(Model.UploadType)</h2>
+                <p>Choose the file to upload and then click on the Upload File button.</p>
+                @using (Html.BeginForm("UploadInvoiceDocument", "Supplier", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Partial("_UploadFileFields", Model)
+                    <input type="submit" value="Upload File" class="btn btn-primary" />
+                }
+                <div class="default-top-margin clear-fix">
+                    <hr />
+                    @Html.ActionLink("<< Back to Invoice", "Invoice", "Supplier", new { workOrderRef = Model.UploadRef }, null)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

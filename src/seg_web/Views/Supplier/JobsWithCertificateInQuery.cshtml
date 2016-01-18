@@ -1,0 +1,45 @@
+﻿@using Booker.WebUI.Helpers
+@model IEnumerable<Booker.WebUI.Models.QueriedCertificatesModel>
+@{
+    ViewBag.Title = "Certificates in Query";
+    ViewBag.MenuSection = "jobs-menu";
+    // Used to determine navigation link in shared page that is accessed from this page.
+    TempData["PageOrigin"] = ViewContext.RouteData.Values["action"];
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+                <table id="queried-supplier-certificates" class="responsive clicktable" data-empty-table="There are no jobs with certificate in query">
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Job Type</th>
+                            <th>Site</th>
+                            <th>Reason</th>
+                            <th>Fault Service/PPM Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="clickable">
+                                <td>@Html.ActionLink(string.Format("{0:0}", item.JobRef), "UploadCertificate", "Supplier", new { jobRef = item.JobRef }, null)</td>
+                                <td>@Html.TextOrEmptyString(@item.JobType)</td>
+                                <td>@Html.TextOrEmptyString(@item.SiteName)</td>
+                                <td>@Html.TextOrEmptyString(@item.CertificateQueryReason)</td>
+                                <td>@Html.TextOrEmptyString(@item.FaultServiceDescription)</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

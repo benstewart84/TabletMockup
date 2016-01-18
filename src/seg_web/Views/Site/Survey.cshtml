@@ -1,0 +1,95 @@
+﻿@using System.Linq.Expressions
+@using Booker.WebUI.Models.Store
+@using System.Threading
+@model PulseQuestionnaireViewModel
+@{
+    ViewBag.Title = "Survey";
+    ViewBag.MenuSection = "survey-menu";
+}
+
+@helper DisplayQuestion(string question, Expression<Func<PulseQuestionnaireViewModel, int?>> answer, bool allowNa)
+{
+    <tr>
+        <td>@Html.ValidationMessageFor(answer) @question</td>
+        <td class="answerCell">
+            @if (allowNa)
+            {
+                @Html.RadioButtonFor(answer, -1, new { title = "N/A" })
+            }
+        </td>
+        <td class="answerCell">@Html.RadioButtonFor(answer, 0, new { title = "Poor" })</td>
+        <td class="answerCell">@Html.RadioButtonFor(answer, 5, new { title = "Fair" })</td>
+        <td class="answerCell">@Html.RadioButtonFor(answer, 8, new { title = "Good" })</td>
+        <td class="answerCell">@Html.RadioButtonFor(answer, 10, new { title = "Very Good" })</td>
+    </tr>
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title of service in @(Model.SurveyPeriod.ToString("MMMM")) @(Model.SurveyPeriod.ToString("yyyy")) - @Model.StoreName</h2>
+                <strong>Please complete by @Model.DueDate.ToString(Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern)</strong>
+                <br /><br />
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.Id)
+                    @Html.ValidationSummary(true, "Please answer all questions marked with an asterisk")
+
+                    @Html.HiddenFor(m => m.Question1AllowNa)
+                    @Html.HiddenFor(m => m.Question2AllowNa)
+                    @Html.HiddenFor(m => m.Question3AllowNa)
+                    @Html.HiddenFor(m => m.Question4AllowNa)
+                    @Html.HiddenFor(m => m.Question5AllowNa)
+                    @Html.HiddenFor(m => m.Question6AllowNa)
+                    @Html.HiddenFor(m => m.Question7AllowNa)
+                    @Html.HiddenFor(m => m.Question8AllowNa)
+                    <table>
+                        <tr>
+                            <th>Pulse questions</th>
+                            <th>N/A</th>
+                            <th>Poor</th>
+                            <th>Fair</th>
+                            <th>Good</th>
+                            <th>Very Good</th>
+                        </tr>
+
+                        @DisplayQuestion(Model.Question1, m => m.Answer1, Model.Question1AllowNa)
+                        @DisplayQuestion(Model.Question2, m => m.Answer2, Model.Question2AllowNa)
+                        @DisplayQuestion(Model.Question3, m => m.Answer3, Model.Question3AllowNa)
+                        @DisplayQuestion(Model.Question4, m => m.Answer4, Model.Question4AllowNa)
+                        @DisplayQuestion(Model.Question5, m => m.Answer5, Model.Question5AllowNa)
+                        @DisplayQuestion(Model.Question6, m => m.Answer6, Model.Question6AllowNa)
+                        @DisplayQuestion(Model.Question7, m => m.Answer7, Model.Question7AllowNa)
+                        @DisplayQuestion(Model.Question8, m => m.Answer8, Model.Question8AllowNa)
+                    </table>
+                    <br />
+                    @:Additional comments @Html.ValidationMessageFor(m => m.Comments)<br />
+                    @Html.TextAreaFor(m => m.Comments, new { @class = "w948px" })
+                    <br />
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section css
+{
+    <style>
+        input[type=radio] {
+            border: 0;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .field-validation-error {
+            display: inline;
+        }
+
+        .answerCell {
+            text-align: center;
+            padding: 0;
+        }
+    </style>
+}

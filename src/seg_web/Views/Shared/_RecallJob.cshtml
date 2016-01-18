@@ -1,0 +1,32 @@
+﻿@using Booker.WebUI.Helpers
+@using Booker.Common
+@model Booker.WebUI.Views.ViewModels.SingleStoreLogin.JobCreateViewModel
+
+@using (Html.BeginForm("RecallJob", "SingleStoreLogin", null, FormMethod.Post, new { id = "RecallJobForm" }))
+{
+    <div id="RecallJob">A similar job was completed recently. Do you want to log this as a Recall Job?.</div>
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.AssetTag)
+    @Html.HiddenFor(model => model.AssetTagId)
+    @Html.HiddenFor(model => model.AssetTagNumber)
+    @Html.HiddenFor(model => model.Duplicates)
+    @Html.HiddenFor(model => model.FaultDescription)
+    @Html.HiddenFor(model => model.FaultService)
+    @Html.HiddenFor(model => model.FaultPriority)
+    @Html.HiddenFor(model => model.FaultType)
+    @Html.HiddenFor(model => model.Location)
+    @Html.HiddenFor(model => model.LocationId)
+    @Html.HiddenFor(model => model.LoggedBy)
+    @Html.HiddenFor(model => model.RecallJob)
+    @Html.HiddenFor(model => model.StoreContact)
+    @Html.HiddenFor(model => model.StoreName)
+
+    <div class="form-group">
+        <input name="recall" type="submit" id="yes" value ="Yes" class="btn btn-primary"/>
+        <input name="recall" type="submit" id="no" value="No" class="btn btn-danger"/>
+    </div>
+}
+<script>
+    window.cf = window.cf || {};
+    @*cf.partsLineType = "@InvoiceLineTypes.Parts";*@
+</script>

@@ -1,0 +1,68 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.SupplierQuoteQueryModel
+
+@{
+    ViewBag.Title = "Quote Query";
+    ViewBag.MenuSection = "quotes-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>Quote Query</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Quote Date</th>
+                            <th>Description</th>
+                            <th>Site</th>
+                            <th>Value (£)</th>
+                            <th>Quote Ref</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@string.Format("{0:0}", @Model.PendingQuery.JobRef)</td>
+                            <td>@Html.TextOrEmptyString(@Model.PendingQuery.QuoteDate.ToCurrentCultureDateTime())</td>
+                            <td>@Html.TextOrEmptyString(@Model.PendingQuery.Description)</td>
+                            <td>@Html.TextOrEmptyString(@Model.PendingQuery.SiteName)</td>
+                            <td class="right-text">@Html.DecimalToCurrencyString(@Model.PendingQuery.QuoteValue)</td>
+                            <td>@Html.TextOrEmptyString(@Model.PendingQuery.QuoteRef)</td>
+                        </tr>
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+
+                <h3>Query from @Model.CurrentQuery.QueryFrom <span class="smaller-text">(@Html.TextOrEmptyString(Model.CurrentQuery.QueryDate.ToCurrentCultureDateTime()))</span></h3>
+                <p class="query-text">
+                    @Model.CurrentQuery.QueryText
+                </p>
+                @using (Html.BeginForm("Query", "Quote", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Partial("_SupplierQuoteQueryResponse", Model.CurrentQuery)
+                }
+
+                @if ((Model.QueryHistory != null) && (Model.QueryHistory.Count > 0))
+                {
+                    <h3 id="query-history-title" data-show-link-text="Show/hide">Query History</h3>
+                    @Html.Partial("_QuoteQueryHistory", Model.QueryHistory)
+                }
+
+                <div class="default-top-margin clear-fix">
+                    <hr />
+                    @Html.ActionLink("<< Back to Quotes with Query Pending", "QuotesWithQueryPending", "Supplier")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/supplierquotequery")
+}

@@ -1,0 +1,53 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@model IEnumerable<Booker.Data.Entities.ViewQuoteApprovalScenario>
+@{
+    ViewBag.Title = "Quotes in Query";
+    ViewBag.MenuSection = "quotes-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+                <table id="quotes-query-pending" class="responsive clicktable" data-empty-table="There are no quotes with query pending">
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Date Queried</th>
+                            <th>Description</th>
+                            <th>Value (£)</th>
+                            <th>Supplier</th>
+                            <th>Query</th>
+                            <th>Query Reason</th>
+                            <th>Site</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var qas in Model)
+                        {
+                            var query = qas.Queries.First();
+                            <tr class="clickable" qas-id="@qas.ID">
+                                <td>@Html.IntOrNaString(qas.JobID)</td>
+                                <td>@Html.TextOrEmptyString(query.CreatedOn.ToCurrentCultureDateTime())</td>
+                                <td>@qas.Description</td>
+                                <td class="right-text">@Html.DecimalToCurrencyString(qas.Cost)</td>
+                                <td>@Html.AsCommaSeparatedList(qas.Suppliers, (sup) => sup.Supplier)</td>
+                                <td>@query.QueryText</td>
+                                <td>@query.QueryReason.Reason</td>
+                                <td>@qas.Site</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <a style="display: none" id="QueryNotesLink" href="@Url.Action("Notes", "QuotesQueryPending")"></a>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}
+
+

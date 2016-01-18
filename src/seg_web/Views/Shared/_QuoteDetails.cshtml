@@ -1,0 +1,119 @@
+﻿@using Booker.WebUI.Enums
+@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@using Booker.WebUI.Models
+@model Booker.WebUI.Models.QuotesAwaitingApproval.QuoteApprovalDecisionModel
+
+<a id="QuoteApprovalScenarioTable"></a>
+<table>
+    <thead>
+        <tr>
+            <th>Job ID</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Main Type</th>
+            <th>Fault Service</th>
+            <th>Queried</th>
+            <th>Site</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.QuoteApprovalScenario.JobRefToString</td>
+            <td>@Html.TextOrEmptyString(Model.QuoteApprovalScenario.DateCreated.ToCurrentCultureDateTime())</td>
+            <td>@Model.QuoteApprovalScenario.Description</td>
+            <td>@Model.QuoteApprovalScenario.MainType</td>
+            <td>@Model.QuoteApprovalScenario.FaultService</td>
+            <td>@Html.BoolToString(Model.QuoteApprovalScenario.IsQueried)</td>
+            <td>@Model.QuoteApprovalScenario.SiteName</td>
+        </tr>        
+    </tbody>
+</table>
+<a id="QuoteHeaderTable"></a>
+<table class="default-top-margin nonclickable">
+    <thead>
+        <tr>
+            <th>Quote Ref</th>
+            <th>Quote Date</th>
+            <th>Quote Priority</th>
+            <th>Quote Value (£)</th>
+            @if (!User.IsInRole(UserManagementHelper.SiteManagerRoleName) && !User.IsInRole(UserManagementHelper.MemberRoleName))
+            {
+                <th>Supplier</th>
+                <th class="center-text">Quote Document</th>
+                <th class="center-text">Supporting Documents</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.Quote.QuoteHeader.QuoteRef</td>
+            <td>@Html.TextOrEmptyString(Model.Quote.QuoteHeader.QuoteDate.ToCurrentCultureDateTime())</td>
+            <td>@Model.QuoteApprovalScenario.Priority</td>
+            <td class="right-text">@Html.DecimalToCurrencyString(Model.Quote.QuoteHeader.QuoteValue)</td>
+            @if (!User.IsInRole(UserManagementHelper.SiteManagerRoleName) && !User.IsInRole(UserManagementHelper.MemberRoleName))
+            {
+                <td>@Model.QuoteApprovalScenario.SupplierNames</td>
+                <td class="center-text">@this.ViewFileUpload(Model.Quote.QuoteTemplateUpload)</td>
+                <td class="center-text">@this.ViewFileUpload(Model.Quote.CustomQuoteUpload)</td>
+            }
+        </tr>
+    </tbody>
+</table>
+<a id="QuoteHeaderDescriptionTable"></a>
+<table class="default-top-margin">
+    <thead>
+        <tr>
+            <th>Description of Works</th>
+            <th>Proposed Working Times</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.Quote.QuoteHeader.DescriptionOfWorks</td>
+            <td>@Model.Quote.QuoteHeader.ProposedWorkingTimes</td>
+        </tr>        
+    </tbody>
+</table>
+
+<a id="QuoteLineTable"></a>
+<table class="default-top-margin default-bottom-margin">
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Type</th>
+            <th class="right-text">Quantity</th>
+            <th class="right-text">Unit Price (£)</th>
+            <th class="right-text">Value (£)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var quoteLine in Model.Quote.QuoteLines)
+        {
+            <tr>
+                <td>@quoteLine.Description</td>
+                <td>@quoteLine.QuoteLineTypeDescription
+                    @if (string.Equals(quoteLine.QuoteLineTypeDescription, Booker.Common.QuoteLineTypes.Parts, StringComparison.InvariantCultureIgnoreCase) && !string.IsNullOrEmpty(quoteLine.PartNumber))
+                    {
+                        @:@string.Format(" ({0})", quoteLine.PartNumber)
+                    }
+                </td>
+                <td class="right-text">@Html.DecimalToString(quoteLine.Quantity)</td>
+                <td class="right-text">@Html.DecimalToCurrencyString(quoteLine.UnitPrice)</td>
+                <td class="right-text">@Html.DecimalToCurrencyString(quoteLine.LineValue)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@helper ViewFileUpload(UploadFileViewModel fileUploadModel)
+    {
+        if (fileUploadModel.IsExistingFile)
+        {
+        @Html.ActionLink("View", "QuoteDocument",  new { id = Model.Quote.QuoteHeader.Id, documentType = fileUploadModel.UploadType }, new { target = "_blank" })
+        }
+        else
+        {
+        <text>Not Specified</text>
+        }
+}

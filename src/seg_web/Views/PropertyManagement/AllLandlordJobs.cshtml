@@ -1,0 +1,46 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@model IEnumerable<Booker.WebUI.Models.LandlordJobModel>
+@{
+    ViewBag.Title = "Jobs sent to Landlords";
+    ViewBag.MenuSection = "jobs-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+                <table id="awaiting-confirmation" class="responsive clicktable" data-empty-table="There are no jobs currently sent out to Landlords">
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Landlord</th>
+                            <th>Fault Service</th>
+                            <th>Site</th>
+                            <th>Logged Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="clickable">
+                                <td>@Html.TextOrEmptyString(item.JobRef.ToString())</td>
+                                <td>@Html.TextOrEmptyString(item.LandlordName)</td>
+                                <td>@Html.TextOrEmptyString(item.FaultService)</td>
+                                <td>@Html.TextOrEmptyString(item.SiteName)</td>
+                                <td>@Html.TextOrEmptyString(item.LoggedDate.ToCurrentCultureDateTime())</td>
+                                <td>@Html.TextOrEmptyString(item.Status)</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

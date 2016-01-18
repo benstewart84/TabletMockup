@@ -1,0 +1,14 @@
+﻿@model Booker.WebUI.Models.QuoteLineModel
+
+@{
+    Layout = null;
+}
+
+@if (Model != null)
+{
+    @Html.Partial("_QuoteLine", Model)
+}
+else
+{
+  <p class="center-text">Sorry, the quote line requested does not exist.</p>
+}

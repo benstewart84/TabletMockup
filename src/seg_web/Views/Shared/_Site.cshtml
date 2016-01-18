@@ -1,0 +1,31 @@
+﻿@using Booker.WebUI.Models
+@model MemberSiteAddressModel
+@{
+    var lstStoreType = ViewBag.StoreTypeList as IEnumerable<SelectListItem>;
+    var lstStoreTypeStoreSize = ViewBag.StoreTypeStoreSizeList as IEnumerable<SelectListItem>;
+
+}
+<tr>
+    <td>
+        <button type="button" style="width: 95% !important;" class="btn  btn-primary selectRow">
+            <span class="glyphicon glyphicon-edit"></span>
+        </button>
+    </td>
+    <td>@Html.TextBoxFor(x => x.Site, new { @class = "site" })</td>
+    <td>@Html.TextBoxFor(x => x.AddressLine1, new { @class = "addressLine1" })</td>
+    <td>@Html.TextBoxFor(x => x.AddressLine2, new { @class = "addressLine2" })</td>
+    <td>@Html.TextBoxFor(x => x.City, new { @class = "siteCity" })</td>
+    <td>@Html.TextBoxFor(x => x.PostCode, new { @class = "postCode" })</td>
+    <td class="col-sm-1">@Html.DropDownListFor(x => x.TypeAndSize, lstStoreTypeStoreSize, new { @class = "siteTypeAndSize" })</td>
+    <td class="col-xs-1">
+        <button type="button" class="btn btn-sm btn-success saverow">
+            <span class="glyphicon glyphicon-ok"></span>
+        </button> @Html.Raw("&nbsp;")
+        <button type="button" class="btn btn-sm btn-danger deleterow">
+            <span class="glyphicon glyphicon-trash"></span>
+        </button>
+
+    </td>
+
+
+</tr>

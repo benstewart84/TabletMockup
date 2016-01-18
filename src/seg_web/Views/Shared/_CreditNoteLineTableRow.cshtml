@@ -1,0 +1,28 @@
+﻿@using Booker.WebUI.Helpers
+@using Booker.Common
+@model Booker.WebUI.Models.CreditNoteLineModel
+
+<tr data-id="@Model.Id">
+    @if (Model.IsReadOnly)
+    {
+        <td>@Model.Description</td>
+    }
+    else
+    {
+        <td>@Html.ActionLink(@Model.Description, "EditCreditNoteLine", "Supplier", new { workOrderRef = @Model.WorkOrderRef, id = @Model.Id }, new { @class = "edit-detail-line", @data_title = "Edit CreditNote Line", data_ajax_post_url = @Url.Action("EditCreditNoteLine", "Supplier") })</td>
+    }
+    <td>@Model.CreditNoteLineTypeDescription
+    @if (Model.CreditNoteLineTypeId == CreditNoteLineTypes.Parts && !string.IsNullOrEmpty(Model.PartNumber))
+    {
+        @:(@Model.PartNumber) 
+    }
+    </td>
+    <td class="right-text">@Html.DecimalToString(Model.Quantity)</td>
+    <td class="right-text">@Html.DecimalToThreePointPrecisionCurrencyString(Model.UnitPrice)</td>
+    <td class="right-text in-total-line-value">@Html.DecimalToCurrencyString(Model.LineValue)</td>
+    
+    @if (Model.IsReadOnly == false)
+    {
+        <td class="center-text">@Html.ActionLink("Delete", "DeleteInvoiceLine", "Supplier", new { workOrderRef = @Model.WorkOrderRef, id = @Model.Id }, new { @class = "delete-detail-line", @data_title = "Delete Invoice Line", data_ajax_post_url = @Url.Action("DeleteInvoiceLine", "Supplier") })</td>
+    }
+</tr>

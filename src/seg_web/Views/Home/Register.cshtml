@@ -1,0 +1,85 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.RegisterInterestModel
+@{
+    ViewBag.Title = String.Format("Home - {0}", Booker.Common.CompanyStrings.ShortName);
+}
+
+
+<div class="home-wrapper">
+
+    <div class="container" id="RegisterInterest">
+
+        <div class="row">
+            <div class="col-xs-12">
+                <br />
+                <h1 style="color:white;">Register Interest Now</h1><br />
+
+                @using (Html.BeginForm("Register", "Home", new { ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "fancy-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary()
+                    @Html.Partial("GenericErrorSummary")
+                    
+                    <div class="form-group">
+                        @Html.BootstrapLabelFor(m => m.MemberNumber)
+                        @Html.BootstrapTextBoxFor(m => m.MemberNumber)
+                        @Html.ValidationMessageFor(m => m.MemberNumber, null, new { @class = "help-inline" })
+                    </div>
+                    <div class="form-group">
+                        @Html.BootstrapLabelFor(m => m.Name)
+                        @Html.BootstrapTextBoxFor(m => m.Name)
+                        @Html.ValidationMessageFor(m => m.Name, null, new { @class = "help-inline" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.BootstrapLabelFor(m => m.ContactNumber)
+                        @Html.BootstrapTextBoxFor(m => m.ContactNumber, new { @type = "tel" })
+                        @Html.ValidationMessageFor(m => m.ContactNumber, null, new { @class = "help-inline" })
+                    </div>
+                    <div class="form-group">
+                        <span class="control-label" style="font-size: 1em; font-weight: 600;">Callback Date & Time</span>
+                        @Html.BootstrapTextBoxFor(m => m.CallBackDateTime.ToCurrentCultureDateTime(), new { @class = "jquery_bootstrapdatetimepicker" })
+                        @Html.ValidationMessageFor(m => m.CallBackDateTime, null, new { @class = "help-inline" })
+                    </div>
+                    <div class="form-group">
+                        @Html.BootstrapLabelFor(m => m.Email)
+                        @Html.BootstrapTextBoxFor(m => m.Email, new { @type = "email" })
+                        @Html.ValidationMessageFor(m => m.Email, null, new { @class = "help-inline" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.BootstrapLabelFor(m => m.LeadSource)
+                        @Html.BootstrapDropDownListFor(m => m.LeadSource, Model.SourceList)
+                    </div>
+                    <input type="submit" value="Submit" class="btn btn-warning btn-lg" />
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+
+    @Scripts.Render("~/bundles/globalize")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryvalcustom")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/datetimepicker")
+    @Scripts.Render("~/bundles/commonhelpers")
+    @Scripts.Render("~/bundles/placeholderpolyfill")
+    @Scripts.Render("~/bundles/home")
+    @Scripts.Render("~/bundles/bootstrapdatetimepicker")
+
+    <script>
+        var helper = new CommonHelpers();
+        helper.initialiseDatePickers();
+       
+    </script>
+
+}
+@section css {
+    @Styles.Render("~/Content/themes/base/css")
+}

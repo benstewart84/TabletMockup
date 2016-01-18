@@ -1,0 +1,192 @@
+﻿@using System.Threading
+@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@using Booker.WebUI.Models
+@model LeadModel
+
+@{
+    ViewBag.Title = "Lead Follow Up";
+    ViewBag.MenuSection = "Home-menu";
+    Model.CallBackDateTime = null;
+
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title</h2>
+
+                @using (Html.BeginForm("FollowUpLead", "HelpDesk", null, FormMethod.Post, new { id = "FollowUpLeadForm", @class = "input-form" }))
+                {
+                    <div class="row">
+                        <div class="col-xs-7 borderRight">
+                            @Html.HiddenFor(m => m.Id)
+                            @Html.AntiForgeryToken()
+
+                            @Html.ValidationSummary(false, "We're missing some information:")
+                            <div class="form-group h30">
+                                <span><strong>Lead ID:</strong></span> @Model.Id
+                            </div>
+                            <div class="form-group h30">
+                                <span><strong>Member Name:</strong></span> @Model.Name
+                            </div>
+                            <div class="form-group h30">
+                                <span><strong>Member Number:</strong></span> @Model.MemberNumber
+                            </div>
+
+                            <div class="form-group h30">
+                                <span><strong>Contact Number:</strong></span> @Model.ContactNumber
+                            </div>
+                            <div class="form-group h30">
+                                <span><strong>Callback Date & Time</strong></span>
+                                @Html.BootstrapTextBoxFor(m => m.CallBackDateTime.ToCurrentCultureDateTime(), new { @class = "jquery_bootstrapdatetimepicker" })
+                                @Html.ValidationMessageFor(m => m.CallBackDateTime, null, new { @class = "help-inline" })
+                            </div>
+
+
+                            <div class="form-group h30">
+                                <span><strong>Lead Status:</strong></span> <span id="leadStatus"> @SiteHelper.GetLeadStatusDescByStatusId(Model.StatusId)</span>
+                            </div>
+                            <div id="Output" class="hide">
+                                <p id="responseText" class="alert-success">Successfully Saved!</p>
+                            </div>
+                            <div class="form-group clearfix">
+
+                                <input type="submit" value="Save" class="btn btn-primary pull-left" onclick="SaveLead(); return false;" />&nbsp;
+                                <div class="pull-right">
+
+                                    <input type="button" value="Service Declined" class="btn btn-danger" data-toggle="modal" data-target="#ServiceDeclineModal" />&nbsp;
+
+
+                                    @Html.ActionLink("Member Sign Up", "MemberSignUp", new { id = Model.Id }, new { @class = "btn btn-success anchor default-top-margin-6px", id = "btnMemberSignUp" })
+
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="col-xs-5 notesPanel">
+
+                            <div class="form-group">
+                                <table id="notes" class=" table table-hover table-bordered responsive" data-empty-table="There are no callback notes">
+                                    <thead>
+                                        <tr>
+                                            <th>Call Back Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="NotesBody"></tbody>
+                                </table>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#NotesModal">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                    <span>Add a Note</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+                <div class="default-top-margin clear-fix">
+                    <hr />
+                    @Html.ActionLink("<< Back to Leads to Phone", "ActiveLeads", "HelpDesk", new { id = Model.Id }, null)
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="NotesModal" tabindex="-1" role="dialog" aria-labelledby="NotesLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="NotesLabel">Add New</h4>
+            </div>
+            <div class="modal-body">
+                <div id="NotesError" class="validation-summary-errors" style="display: none">Sorry, there was an unexpected error processing your request.</div>
+                <form>
+                    <div class="form-group">
+                        <label for="NotesText" class="control-label">Notes:</label>
+                        <textarea class="form-control" id="NotesText"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="AddNotes">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ServiceDeclineModal" tabindex="-1" role="dialog" aria-labelledby="ServiceDeclineLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="NotesLabel">Service Declined</h4>
+            </div>
+            <div class="modal-body">
+                <div id="ServiceDeclineError" class="validation-summary-errors" style="display: none">Sorry, there was an unexpected error processing your request.</div>
+                <form>
+                    <div class="form-group">
+                        <div class="form-group">
+                            <span>Choose Reason:</span> @Html.BootstrapDropDownListFor(model => model.DeclineReasonId, Model.ServiceDeclineReasonsList)
+                        </div>
+                        <label for="ServiceDeclineNotesText" class="control-label default-top-margin">Notes:</label>
+                        <textarea class="form-control" id="ServiceDeclineNotesText"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="ServiceDeclineAddNotes">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script id="notes-template" type="text/x-handlebars-template">
+    {{#each this}}
+    <tr>
+        <td>
+            {{NoteText}} :&nbsp;by <strong>{{Username}}</strong> on <strong>{{formatDate NoteDate}}</strong><br />
+        </td>
+    </tr>
+    {{else}}
+    <tr>
+        <td>
+            There are no notes.
+        </td>
+    </tr>
+    {{/each}}
+
+</script>
+
+
+@section scripts {
+    @Scripts.Render("~/bundles/globalize")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryvalcustom")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/datetimepicker")
+    @Scripts.Render("~/bundles/jquerydatatables")
+    @Scripts.Render("~/bundles/handlebars")
+    @Scripts.Render("~/bundles/commonhelpers")
+    @Scripts.Render("~/bundles/leadfollowup")
+    @Scripts.Render("~/bundles/placeholderpolyfill")
+    @Scripts.Render("~/bundles/bootstrapdatetimepicker")
+    <script>
+        var helper = new CommonHelpers();
+        helper.initialiseDatePickers();
+
+    </script>
+}
+@section css {
+    @Styles.Render("~/Content/themes/base/css")
+}

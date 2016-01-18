@@ -1,0 +1,86 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.CreditNoteDateFilterModel
+@{
+    ViewBag.Title = "CreditNotes";
+    ViewBag.MenuSection = "invoices-menu";
+}
+@section css {
+    @Styles.Render("~/Content/themes/base/css")
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title</h2>
+
+
+                @using (Html.BeginForm("SupplierCreditNotes", "Supplier"))
+                {
+                    @Html.AntiForgeryToken()
+                    <fieldset class="header-fields">
+                        <legend class="hidden">Credits</legend>
+                        <div class="header-row">
+                            <div class="editor-for">
+                                @Html.LabelFor(model => model.DateFrom)
+                                @Html.EditorFor(model => model.DateFrom.ToCurrentCultureShortDate())
+                                @Html.ValidationMessageFor(model => model.DateFrom)
+                            </div>
+                            <div class="editor-for">
+                                @Html.LabelFor(model => model.DateUntil)
+                                @Html.EditorFor(model => model.DateUntil.ToCurrentCultureShortDate())
+                                @Html.ValidationMessageFor(model => model.DateUntil)
+                            </div>
+
+                        </div>
+                        <div class="clearall default-bottom-margin">
+                            <input type="submit" value="Search" class="btn btn-primary" />
+
+                        </div>
+                    </fieldset>
+                }
+
+        <table id="invoices-in-query" class="clicktable responsive" data-empty-table="There are no credit notes for this supplier">
+            <thead>
+                <tr>
+                    <th>Work Order Ref</th>
+                    <th>Credit Number</th>
+                    <th>Credit Date</th>
+                    <th>Invoice No</th>
+                    <th>Net Amout(£) Date</th>
+                    <th>VAT Amount(£)</th>
+                    <th>Status</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.CreditNoteHeaders != null)
+                {
+                    foreach (var item in Model.CreditNoteHeaders)
+                     {
+                         <tr>
+                             <td>@item.WorkOrderRef</td>
+                             <td>@item.CreditNumber</td>
+                             <td>@Html.TextOrEmptyString(item.CreditDate.ToShortDateString())</td>
+                             <td>@item.InvoiceNumber</td>
+                             <td>@String.Format("{0:C2}", item.NetAmount) </td>
+                             <td>@String.Format("{0:C2}", item.VatAmount)</td>
+                             <td>@SiteHelper.GetInvoiceStatusByInvoiceStatusTypeId(item.CreditNoteStatusId)</td>
+                         </tr>
+                     }
+                }
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+        
+</div>
+            </div>
+        </div>
+    </div>
+               
+                    @section scripts {
+                       @Scripts.Render("~/bundles/jqueryval")
+                    @Scripts.Render("~/bundles/jqueryui")
+                    @Scripts.Render("~/bundles/approvedinvoices")
+                    @Scripts.Render("~/bundles/jquerydatatables")
+                    }

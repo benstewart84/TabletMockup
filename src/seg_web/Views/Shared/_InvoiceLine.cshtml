@@ -1,0 +1,142 @@
+﻿@using Booker.WebUI.Helpers
+@using Booker.Common
+@model Booker.WebUI.Models.InvoiceLineModel
+
+@using (Html.BeginForm("CreateInvoiceLine", "Supplier", null, FormMethod.Post, new { id = "InvoiceLineForm" }))
+{
+    <div id="InvoiceLineError" class="validation-summary-errors" style="display: none">Sorry, there was an unexpected error processing your request.</div>
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.HeaderId)
+    @Html.HiddenFor(model => model.WorkOrderRef)
+
+    <div class="form-group">
+        <strong>Type:</strong>
+        @Html.BootstrapDropDownListFor(model => model.InvoiceLineTypeId, Model.InvoiceLineTypeSelectList, true)
+    </div>
+    <div class="form-group" style="@(Model.InvoiceLineTypeId == InvoiceLineTypes.Parts ? "" : "display:none")">
+        <strong>Part Number:</strong>
+        @Html.BootstrapTextBoxFor(model => model.PartNumber, new { @required = "required" })
+    </div>
+    <div class="form-group">
+        <strong>Description:</strong>
+        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @placeholder = "Enter a description", @required = "required" })
+    </div>
+    <div class="form-group">
+        <strong>Quantity of Units:</strong>
+        @Html.TextBoxFor(model => model.Quantity, "{0:F0}", new { @class = "form-control", @required = "required" })
+    </div>
+    <div class="form-group">
+        <strong>Unit Price ($):</strong>
+        @Html.TextBoxFor(model => model.UnitPrice, "{0:F2}", new { @class = "form-control", @required = "required" })
+    </div>
+    <div class="form-group">
+        <strong>Unit Tax Amount ($):</strong>
+        @Html.TextBoxFor(model => model.UnitTaxAmount, "{0:F2}", new { @class = "form-control", @required = "required" })
+    </div>
+    <div class="form-group">
+        <strong>Line Net ($):</strong>
+        @Html.DisplayFor(model => model.LineNetValue, "LineNetValue")
+    </div>
+    <div class="form-group">
+        <strong>Line Gross ($):</strong>
+        @Html.DisplayFor(model => model.LineGrossValue, "LineGrossValue")
+    </div>
+    
+    @*<div class="editor-for">
+        @Html.LabelFor(model => model.InvoiceLineTypeId)
+        <div class="editor-field">
+            @if (Model.IsReadOnly)
+            {
+                <span class="form-text">@Model.InvoiceLineTypeDescription</span>
+            }
+            else
+            {
+                @Html.DropDownListFor(model => model.InvoiceLineTypeId, Model.InvoiceLineTypeSelectList)
+                @Html.ValidationMessageFor(model => model.InvoiceLineTypeId)
+            }
+        </div>
+    </div>
+
+    <div class="editor-for" style="@(Model.InvoiceLineTypeId==Booker.Common.InvoiceLineTypes.Parts?"":"display:none")">
+        @Html.LabelFor(m => m.PartNumber)
+        <div class="editor-field">
+            @if (Model.IsReadOnly)
+            {
+                <span class="form-text">@Model.PartNumber</span>
+            }
+            else
+            {
+                @Html.TextBoxFor(m => m.PartNumber)
+                @Html.ValidationMessageFor(m => m.PartNumber)
+            }
+        </div>
+    </div>
+
+    <div class="editor-for">
+        @Html.LabelFor(model => model.Description)
+        <div class="editor-field">
+            @if (Model.IsReadOnly)
+            {
+                <span class="form-text">@Model.Description</span>
+            }
+            else
+            {
+                @Html.EditorFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
+            }
+        </div>
+    </div>
+
+    <div class="editor-for">
+        @Html.LabelFor(model => model.Quantity)
+        <div class="editor-field editor-for-number">
+            @if (Model.IsReadOnly)
+            {
+                <span class="form-text">@Html.DecimalToString(Model.Quantity)</span>
+            }
+            else
+            {
+                @Html.EditorFor(model => model.Quantity)
+                @Html.ValidationMessageFor(model => model.Quantity)
+            }
+        </div>
+    </div>
+
+    <div class="editor-for">
+        @Html.LabelFor(model => model.UnitPrice)
+        <div class="editor-field editor-for-number">
+            @if (Model.IsReadOnly)
+            {
+                <span class="form-text">@Html.DecimalToThreePointPrecisionCurrencyString(Model.UnitPrice)</span>
+            }
+            else
+            {
+                @Html.EditorFor(model => model.UnitPrice)
+                @Html.ValidationMessageFor(model => model.UnitPrice)
+            }
+        </div>
+    </div>*@
+
+    @*@{
+    var lastEditorFieldCLass = Model.IsModalDialog ? "editor-for default-bottom-margin" : "editor-for";
+    }
+
+    <div class="@lastEditorFieldCLass">
+        @Html.LabelFor(model => model.LineValue)
+        <div class="editor-field editor-for-number">
+            @if (Model.IsReadOnly)
+            {
+                <span class="form-text">@Html.DecimalToCurrencyString(Model.LineValue)</span>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.LineValue, "LineValue")
+            }
+        </div>
+    </div>*@
+}
+<script>
+    window.cf = window.cf || {};
+    cf.partsLineType = "@InvoiceLineTypes.Parts";
+</script>

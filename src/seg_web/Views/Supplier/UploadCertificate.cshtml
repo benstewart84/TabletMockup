@@ -1,0 +1,99 @@
+﻿@using Booker.Common
+@model Booker.WebUI.Models.UploadCertificateModel
+@{
+    ViewBag.Title = "Certificate Upload";
+    ViewBag.MenuSection = "jobs-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title</h2>
+                @using (Html.BeginForm("UploadCertificate", "Supplier", new { jobRef = Request.QueryString["jobRef"] }, FormMethod.Post, new { @class = "input-form", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.IsQueried)
+                    @Html.ValidationSummary(false, "We're missing some information:")
+                    if (Model.IsQueried)
+                    {
+                        <div class="validation-summary-errors">
+                            This Certificate has been queried for the following reason:
+                            <br />
+                            <br />
+                            <ul style="margin-bottom: 0">
+                                <li>@Model.QueryReason</li>
+                            </ul>
+                            <br />
+                            Please resolve this issue by uploading a revised Certificate.
+                        </div>
+                    }
+                    <div class="form-group">
+                        <strong>Job Ref:</strong> @Request.QueryString["jobRef"]
+                    </div>
+                    <div class="form-group">
+                        <strong>Job Type:</strong> @Model.JobType
+                    </div>
+                    <div class="form-group">
+                        <strong>Supplier Reference:</strong> @Model.SupplierReference
+                    </div>
+                    <div class="form-group">
+                        <strong>Certificate Reference:</strong> @Model.CertificateNumber
+                    </div>
+                    <div class="form-group">
+                        <strong>Site Name:</strong> @Model.SiteName
+                    </div>
+                    <div class="form-group">
+                        <strong>
+                            @(Model.JobType == JobTypes.PPM ? "PPM Type:" : "Fault Service:")
+                        </strong> @Model.FaultServiceDescription
+                    </div>
+                    <div class="form-group">
+                        <strong>Notes:</strong> @Model.Notes
+                    </div>
+                    <div class="form-group">
+                        @this.Html.LabelFor(model => model.FileToUpload)
+                        @this.Html.TextBoxFor(model => model.FileToUpload, new { type = "file", @class = "form-control" })
+                        @*@this.Html.LabelFor(model => model.FilesToUpload)
+                        @this.Html.TextBoxFor(model => model.FilesToUpload, new { type = "file", @class = "form-control" })
+                        @this.Html.TextBoxFor(model => model.FilesToUpload, new { type = "file", multiple = "multiple", @class = "form-control" })*@
+                        <p class="small-text">* Maximum file size is 4 MB and the file must be a .pdf</p>
+                    </div>
+                    <p>
+                        <input type="submit" value="Confirm" class="btn btn-primary" />
+                    </p>
+                }
+                <div class="default-top-margin clear-fix">
+                    <hr />
+                    @if (TempData["PageOrigin"] != null)
+                    {
+                        if (TempData["PageOrigin"].ToString() == "JobsWithCertificateInQuery")
+                        {
+                            @Html.ActionLink("<< Back to Certificates in Query", "JobsWithCertificateInQuery", "Supplier")
+                        }
+                        else if (TempData["PageOrigin"].ToString() == "JobsAwaitingCertificate")
+                        {
+                            @Html.ActionLink("<< Back to Jobs Awaiting Certificate", "JobsAwaitingCertificate", "Supplier")
+                        }
+                    }
+                    else
+                    {
+                        @Html.ActionLink("<< Back to Jobs Awaiting Certificate", "JobsAwaitingCertificate", "Supplier")
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryvalcustom")
+    @Scripts.Render("~/bundles/supplierhelpers")
+    <script>
+        var helper = new CommonHelpers();
+        helper.initialiseDatePickers();
+    </script>
+}
+@section css {
+    @Styles.Render("~/Content/themes/base/css")
+}

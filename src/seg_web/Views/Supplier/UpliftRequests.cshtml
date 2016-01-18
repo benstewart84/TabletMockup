@@ -1,0 +1,53 @@
+﻿@using Booker.WebUI.Helpers
+@using System.Threading
+@using Booker.WebUI.Extensions
+@model IEnumerable<Booker.WebUI.Models.Suppliers.UpliftRequestModel>
+@{
+    ViewBag.Title = "Uplift Requests";
+    ViewBag.MenuSection = "jobs-menu";
+    // Used to determine navigation link in shared page that is accessed from this page.
+    TempData["PageOrigin"] = ViewContext.RouteData.Values["action"];
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+                <table id="jobs-awaiting-closedown" class="responsive clicktable" data-empty-table="There are no currently approved uplift requests">
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Site</th>
+                            <th>Fault Service</th>
+                            <th>Uplift Amount</th>
+                            <th>Approved By</th>
+                            <th>Date Approved</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            @*<tr class="clickable">*@
+                            <tr>
+                                @*<td>@Html.ActionLink(string.Format("{0:0}", item.FaultId), "UpliftRequest", "Supplier", new { jobRef = item.FaultId }, null)</td>*@
+                                <td>@Html.TextOrEmptyString(@item.FaultId.ToString())</td>
+                                <td>@Html.TextOrEmptyString(@item.StoreName)</td>
+                                <td>@Html.TextOrEmptyString(@item.FaultService)</td>
+                                <td>@Html.TextOrEmptyString(@item.Amount.ToString("C"))</td>
+                                <td>@Html.TextOrEmptyString(@item.ApprovedBy)</td>
+                                <td>@Html.TextOrEmptyString(@item.DateApproved.ToCurrentCultureDateTime())</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}
+
+

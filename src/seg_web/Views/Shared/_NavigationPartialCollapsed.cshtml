@@ -1,0 +1,42 @@
+﻿@* Renders the Menu section when in mobile mode. *@
+@using Booker.WebUI.Helpers
+@if (Request.IsAuthenticated)
+{
+    // TODO [TL]: How do we highlight the current page as per the expanded tabs.
+    var menuItems = MenuHelper.BuildMenu(HttpContext.Current.User);
+
+    <div class="right-hand-nav visible-xs-inline">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav nav-stacked navbar-nav @ViewBag.MenuSection">
+                @foreach (var menuItem in menuItems)
+                {
+                    if (menuItem.SubMenuItems != null && menuItem.SubMenuItems.Any())
+                    {
+                        <li>
+                            <a href="#" class="@menuItem.DisplayName.ToLower()-menu">@menuItem.DisplayName</a>
+                        </li>
+                        foreach (var subMenuItem in menuItem.SubMenuItems)
+                        {
+                            <li class="sub-menu">
+                                <a href="@Url.Action(subMenuItem.Action, subMenuItem.Controller)">&bull;&nbsp;@subMenuItem.DisplayName</a>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li>
+                            <a href="@Url.Action(menuItem.Action, menuItem.Controller, menuItem.RouteValues)" class="@menuItem.DisplayName.ToLower()-menu">@menuItem.DisplayName</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+}

@@ -1,0 +1,43 @@
+﻿@using System.Threading
+@using Booker.WebUI.Extensions
+@using Ninject
+@model Booker.Data.Entities.Lead
+@{
+    ViewBag.Title = String.Format("Lead in Use - {0}", Booker.Common.CompanyStrings.ShortName);
+}
+<div class="jumbotron">
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <h2>Lead in Use!</h2>
+            @*<div class="shield hidden-xs">
+                        <img src="~/Content/images/shield.png" />
+                    </div>*@
+            <div>
+                <p class="lead">
+                    This lead is in use by @Model.LockingUser and was checked out at @Model.LockingTimeDate.ToCurrentCultureDateTime()
+                    <br />
+                    @Html.ActionLink("Click here to go back!","ActiveLeads")
+                    <br/><br/>
+                    @Html.ActionLink("Unlock Lead","LeadUnlock",new{id=@Model.Id},new{@class="btn btn-lg btn-warning"})
+
+                </p>
+                @*@{
+                            if (TempData.ContainsKey("InPilotArea") && bool.Parse(TempData["InPilotArea"].ToString()))
+                            {
+                                <p class="lead">
+                                    An advisor will call you between the hours of your specified time: <b>@TempData["CallBackTime"].ToString()</b>.
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="lead">
+                                    Sorry but your region is not currently covered by City. <br /><br />We're rolling out the service nationally, so when your area is covered, we'll let you know.
+                                </p>
+                            }
+                        }*@
+            </div>
+        </div>
+    </div>
+</div>
+    </div>

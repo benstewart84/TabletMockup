@@ -1,0 +1,138 @@
+﻿@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.ProcessSignupModel
+@{
+    ViewBag.Title = "Home";
+    ViewBag.MenuSection = "home-menu";
+    var monthlyCost = (Model.MemberSignup.AnnualCost / 12).ToString();
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+
+                <h2>Application Approval</h2>
+
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "myform", @class = "input-form" }))
+                {
+
+                    <div class="row">
+                        <div class="col-xs-10">
+                            @Html.HiddenFor(m => m.MemberSignup.Id)
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(m => m.LeadModel.Name)
+                            @Html.HiddenFor(m => m.LeadModel.MemberNumber)
+                            @Html.HiddenFor(m => m.LeadModel.ContactNumber)
+                            @Html.HiddenFor(m => m.LeadModel.Id)
+                            @Html.HiddenFor(m => m.MemberSignup.Id)
+                            @Html.HiddenFor(m => m.MemberSignup.MemberId)
+                            @Html.HiddenFor(m => m.MemberSignup.AnnualCost)
+                            @Html.HiddenFor(m => m.LeadModel.Email)
+
+                            @*@Html.ValidationSummary(false, "We're missing some information:")*@
+
+                            <div class="form-group">
+                                <span><strong>Member Name:</strong></span> @Model.LeadModel.Name
+                            </div>
+                            <div class="form-group">
+                                <span><strong>Member Number:</strong></span> @Model.LeadModel.MemberNumber
+                            </div>
+
+                            <div class="form-group">
+                                <span><strong>Contact Number:</strong></span> @Model.LeadModel.ContactNumber
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <br />
+                            <table id="memberSite" class=" table-responsive table-bordered table-condensed table-hover table-responsive">
+                                <tr>
+
+                                    <th class="col-sm-3">Site Name</th>
+                                    <th class="col-sm-3">Address Line 1</th>
+                                    <th class="col-sm-2">Address Line 2</th>
+                                    <th class="col-sm-2">City</th>
+                                    <th class="col-sm-2">Post Code</th>
+
+                                </tr>
+
+                                @foreach (var item in Model.MemberSiteAddresses)
+                                {
+                                    <tr>
+                                        <td class="col-sm-3">@item.Site</td>
+                                        <td class="col-sm-3">@item.AddressLine1</td>
+                                        <td class="col-sm-2">@item.AddressLine2</td>
+                                        <td class="col-sm-2">@item.City</td>
+                                        <td class="col-sm-2">@item.Postcode</td>
+                                    </tr>
+                                }
+
+                            </table>
+
+
+                        </div>
+                    </div><br />
+                    <div class="row ">
+                        <div class="col-xs-12 noPadding">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="col-xs-3">
+                                        <h4><strong>@Html.LabelFor(x => x.MemberSignup.AnnualCost)</strong></h4>
+                                        @Html.TextBoxFor(x => x.MemberSignup.AnnualCost, "{0:f2}", new { @class = "form-control", @readonly = true })
+
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <h4><strong>@Html.Label("Monthly Cost (£)")</strong></h4>
+                                        <input type="text" value=@monthlyCost class="form-control" readonly />
+
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <h4><strong>@Html.LabelFor(x => x.MemberSignup.MonthlyAdditionalSpendLimit)</strong></h4>
+                                        @Html.TextBoxFor(m => m.MemberSignup.MonthlyAdditionalSpendLimit, new { Value = "", data_val = "false", @class = "form-control numbersOnly w50p" })
+                                        <p id="spendLimitValidator" class="hide">Monthly additional spend limit value is required for approval</p>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row">
+                        <div class="col-xs-10">
+
+                            <div class="row">
+                                <div class="col-xs-10">
+                                    <span><input type="submit" class="btn btn-success" name="Approve" value="Approve" id="Approve" /> &nbsp; <input type="submit" class="btn btn-danger" name="Reject" value="Reject" /></span>
+                                </div>
+
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-10">
+                            <div class="pull-left default-top-margin clear-fix">  @Html.ActionLink("<< Back to Members Approval List", "MembersAwaitingApproval")  @*<a href="#">  &nbsp;&nbsp; << Back to Members Approval List</a>*@</div>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryvalcustom")
+    @Scripts.Render("~/bundles/animations")
+    @Scripts.Render("~/bundles/placeholderpolyfill")
+    @Scripts.Render("~/bundles/jquerydatatables")
+    @Scripts.Render("~/bundles/processmembersignup")
+}
+

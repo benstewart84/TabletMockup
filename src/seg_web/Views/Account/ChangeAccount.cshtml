@@ -1,0 +1,113 @@
+﻿@using Booker.WebUI.Helpers
+@using Newtonsoft.Json
+@model Booker.WebUI.Models.ChangeAccountModel
+@{
+    ViewBag.Title = "Change account";
+    ViewBag.MenuSection = "admin-menu";
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title for @Model.UserName</h2>
+
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary()
+                    @Html.HiddenFor(m => m.UserName)
+                    var helpdeskResources =
+                        Model.Role == UserManagementHelper.SupplierRoleName ? Model.SupplierHelpdeskResources :
+                        Model.Role == UserManagementHelper.MemberRoleName ? Model.StoreUserHelpdeskResources :
+                        Model.Role == UserManagementHelper.CapexUploaderRoleName ? Model.CapexUploaderHelpdeskResources :
+                        Model.Role == UserManagementHelper.UserRoleName ? Model.BookerUserResources :
+                        Model.Role == UserManagementHelper.RetailOpsRoleName ? Model.RetailOpsHelpdeskResources :
+                        Model.CustomerHelpdeskResources;
+
+                    var selectListItems = new List<SelectListItem>(helpdeskResources.Select(hdr => new SelectListItem { Text = hdr.Name, Value = hdr.Id.ToString() }));
+                    selectListItems.Insert(0, new SelectListItem { Text = "Select resource", Value = "" });
+                    <fieldset class="header-fields">
+                        <legend>Registration Form</legend>
+                        <ol>
+                            <li>
+                                @Html.LabelFor(m => m.Role)
+                                @Html.DropDownListFor(m => m.Role, new SelectList(Model.Roles))
+                            </li>
+                            <li>
+                                @Html.LabelFor(m => m.HelpdeskResourceId)
+                                @Html.DropDownListFor(m => m.HelpdeskResourceId, selectListItems)
+                            </li>
+                        </ol>
+                        <div class="header-row">
+                            <div class="editor-for">
+                                <p class="buttons">
+                                    <input type="submit" value="Update" class="btn btn-primary" />
+                                </p>
+                            </div>
+                        </div>
+                    </fieldset>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(function () {
+            var Suppliers =@Html.Raw(@JsonConvert.SerializeObject(Model.SupplierHelpdeskResources, new JsonSerializerSettings{ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
+            var Customers = @Html.Raw(@JsonConvert.SerializeObject(Model.CustomerHelpdeskResources, new JsonSerializerSettings{ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
+            var StoreUsers = @Html.Raw(@JsonConvert.SerializeObject(Model.StoreUserHelpdeskResources, new JsonSerializerSettings{ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
+            var StoreManagers = @Html.Raw(@JsonConvert.SerializeObject(Model.StoreManagerHelpdeskResources, new JsonSerializerSettings{ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
+            var CapexUploaders = @Html.Raw(@JsonConvert.SerializeObject(Model.CapexUploaderHelpdeskResources, new JsonSerializerSettings{ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
+            var RetailOps = @Html.Raw(@JsonConvert.SerializeObject(Model.RetailOpsHelpdeskResources, new JsonSerializerSettings{ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
+            var BookerUsers = @Html.Raw(@JsonConvert.SerializeObject(Model.BookerUserResources, new JsonSerializerSettings{ReferenceLoopHandling = ReferenceLoopHandling.Ignore}));
+
+            var SupplierRole = "@UserManagementHelper.SupplierRoleName";
+            var MemberUserRole = "@UserManagementHelper.MemberRoleName";
+            var StoreManagerRole = "@UserManagementHelper.SiteManagerRoleName";
+            var CapexUploaderRole = "@UserManagementHelper.CapexUploaderRoleName";
+            var RetailOpsRole = "@UserManagementHelper.RetailOpsRoleName";
+            var BookerUserRole = "@UserManagementHelper.UserRoleName";
+
+            $("#Role").on("change",function(){
+                var selectedRole=$("#Role").val();
+
+                var dataSource =
+                    selectedRole == SupplierRole ?  Suppliers :
+                    selectedRole == StoreManagerRole? StoreManagers:
+                    selectedRole == MemberUserRole? StoreUsers:
+                     selectedRole == BookerUserRole ? BookerUsers :
+                    selectedRole == CapexUploaderRole ? CapexUploaders :
+                    selectedRole == RetailOpsRole ? RetailOps :
+                    Customers;
+
+                var helpdeskResourceSelect = $("#HelpdeskResourceId");
+                $("option",helpdeskResourceSelect).remove();
+
+                if(selectedRole=="")
+                {
+                    helpdeskResourceSelect.append('<option value="">Select role</option>');
+                }
+                else
+                {
+                    helpdeskResourceSelect.append('<option value="">Select resource</option>');
+
+                    for(var ct=0;ct<dataSource.length;ct++)
+                    {
+                        helpdeskResourceSelect.append('<option value="'+ dataSource[ct].Id +'">'+ dataSource[ct].Name +'</option>');
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+@section css{
+    <style>
+        input, select {
+            width: 15em;
+        }
+    </style>
+}

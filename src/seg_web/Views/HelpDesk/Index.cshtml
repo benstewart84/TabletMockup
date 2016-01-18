@@ -1,0 +1,144 @@
+﻿@using Booker.Common
+@model Booker.WebUI.Models.HelpDeskHomePageModel
+
+@{
+    ViewBag.Title = "Home";
+    ViewBag.MenuSection = "home-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+
+                <h2>Welcome to the @Booker.Common.CompanyStrings.ShortName Portal</h2>
+                <h2>Home desk index</h2>
+
+                <table id="summary" class="clicktable">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th class="right-text">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                       
+                        @CreateSupplierActionRow("Leads to Phone", "ActiveLeads", Model.LeadsToPhone)
+                        @CreateSupplierActionRow("Member Conversions Awaiting Approval", "MembersAwaitingApproval", Model.NumberOfMemberConversionsAwaitingApproval)
+                        @CreateSupplierActionRow("Approved Member Conversions", "MembersActive", Model.NumberOfApprovedMemberConversions)
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Jobs Awaiting Quote", "Index", "JobsAwaitingQuote")
+                            </td>
+                            <td class="right-text">
+                                @Model.NumberOfJobsAwaitingQuote
+                            </td>
+                        </tr>
+                        @CreateSupplierActionRow("Quotes Awaiting Verification", "", Model.NumberOfQuotesAwaitingApproval, "QuotesAwaitingApproval")
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Quotes in Query", "Index", "QuotesQueryPending")
+                            </td>
+                            <td class="right-text">
+                                @Model.NumberOfQuotesInQuery
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Quotes with Query Response", "Index", "QuotesQueryAnswered")
+                            </td>
+                            <td class="right-text">
+                                @Model.NumberOfQueryResponseQuotes
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Quotes Awaiting Member Approval", "Index", "QuotesAwaitingApproval", new { approvalStatus = QuoteApprovalStatus.AwaitingMemberApproval }, null)
+                            </td>
+                            <td class="right-text">
+                                @Model.NumberOfQuotesAwaitingMemberApproval
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.ActionLink(String.Format("Quotes Awaiting {0} Approval", Booker.Common.PartnerStrings.Name), "Index", "QuotesAwaitingApproval", new { approvalStatus = QuoteApprovalStatus.AwaitingBookerApproval }, null)
+                            </td>
+                            <td class="right-text">
+                                @Model.NumberOfQuotesAwaitingBookerApproval
+                            </td>
+                        </tr>
+                        @CreateSupplierActionRow("Certificates to be Reviewed", "UnverifiedCertificates", Model.NumberOfUnverifiedCertificates)
+                        @CreateSupplierActionRow("Certificates in Query", "CertificatesInQuery", Model.NumberOfQueriedCertificates)
+                        @CreateSupplierActionRow("Certificates with Query Response", "CertificatesWithQueryResponse", Model.NumberOfQueryResponseCertificates)
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Invoices Awaiting Approval", "Index", "InvoiceApproval")
+                            </td>
+                            <td class="right-text">
+                                @Model.NumberOfInvoicesAwaitingApproval
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Orders Awaiting Invoice", "Index", "OrdersAwaitingInvoice")
+                            </td>
+                            <td class="right-text">
+                                @Model.NumberOfOrdersAwaitingInvoice
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Invoices with Query Response", "Index", "InvoicesQueryAnswered")
+                            </td>
+                            <td class="right-text">
+                                @Model.NumberOfInvoicesWithQueryResponse
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.ActionLink("All Customers", "AllCustomers")
+                            </td>
+                            <td class="right-text">
+                                @Model.NumberOfAllCustomers
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Credits Awaiting Approval", "Index", "CreditNoteApproval")
+                            </td>
+                            <td class="right-text">
+                                @Model.NumberOfCreditsAwaitingApproval
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>
+                                @Html.ActionLink("Credits with Query Response", "CreditNotesWithQueryResponse", "CreditNoteApproval")
+                            </td>
+                            <td class="right-text">
+                                @Model.NumberOfCreditsWithQueryResponse
+                            </td>
+                        </tr>
+
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@helper CreateSupplierActionRow(string linkText, string actionName, int num, string controllerName = "HelpDesk")
+{
+    <tr>
+        <td>@Html.ActionLink(linkText, actionName, controllerName)</td>
+        <td class="right-text">@string.Format("{0:0}", num)</td>
+    </tr>
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

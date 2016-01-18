@@ -1,0 +1,35 @@
+﻿@using Booker.WebUI.Models
+@model MemberSiteContactModel
+
+@{
+    var lstRoles = new List<SelectListItem>
+    {
+        new SelectListItem(){Text = "Site Manager",Value = "Site Manager"},
+        new SelectListItem(){Text = "Site Member",Value = "Site Member"}
+
+    };
+
+}
+
+
+<tr class="highlight">
+
+    <td class="col-sm-2">@Html.TextBoxFor(x => x.Name, new { @class = "name" })<input type="text" class="hide" value="0" /></td>
+    <td class="col-sm-2">@Html.TextBoxFor(x => x.ContactNo, new { @class = "contactNo" })</td>
+    <td class="col-sm-2">@Html.TextBoxFor(x => x.Email, new { @class = "email" })</td>
+    <td class="col-sm-1">@Html.DropDownListFor(x => x.Role, lstRoles, new { @class = "role" })</td>
+    <td class="col-xs-1">
+
+        @Html.Raw("&nbsp;")
+        <button type="button" class="btn btn-sm btn-success contactSaveRow">
+            <span class="glyphicon glyphicon-ok"></span>
+        </button> @Html.Raw("&nbsp;")
+        <button type="button" class="btn btn-sm btn-danger contactDeleteRow">
+            <span class="glyphicon glyphicon-trash"></span>
+        </button>
+
+    </td>
+    
+
+</tr>
+

@@ -1,0 +1,306 @@
+﻿@using Booker.WebUI.Helpers
+@using Booker.WebUI.Models
+@using Booker.Common
+@using Booker.WebUI.Extensions
+
+@model SupplierQuoteModel
+
+@{
+    ViewBag.Title = "Register Quote";
+    ViewBag.MenuSection = "quotes-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title</h2>
+                @if (Model.Job != null)
+                {
+                    @Html.HiddenFor(m => m.Job.JobRef)
+                    <a id="JobDetails"></a>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Job Ref</th>
+                                <th>Date Requested</th>
+                                <th>Site</th>
+                                <th>Fault Service</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@string.Format("{0:0}", Model.Job.JobRef)</td>
+                                <td>@Html.TextOrEmptyString(Model.Job.DateRequested.ToCurrentCultureDateTime())</td>
+                                <td>@Html.TextOrEmptyString(Model.Job.SiteName)</td>
+                                <td>@Html.TextOrEmptyString(Model.Job.FaultServiceDescription)</td>
+                            </tr>
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+
+                    @Html.ValidationSummary(true, "This quote has errors, please correct")
+
+                    <a id="QuoteHeaderTable"></a>
+                    <table class="default-top-margin nonclickable">
+                        <thead>
+                            <tr>
+                                <th>Quote Ref</th>
+                                <th>Quote Date</th>
+                                <th>Description of Works</th>
+                                <th>Proposed Working Times</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@Model.QuoteHeader.QuoteRef</td>
+                                <td>@Html.TextOrEmptyString(Model.QuoteHeader.QuoteDate.ToCurrentCultureDateTime())</td>
+                                <td>@Model.QuoteHeader.DescriptionOfWorks</td>
+                                <td>@Model.QuoteHeader.ProposedWorkingTimes</td>
+                                <td class="center-text">@Html.ActionLink("Edit", "EditQuoteHeader", "Quote", new {jobRef = Model.Job.JobRef}, null)</td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+
+                    <a id="CompletionInstructions"></a>
+                    <h3 class="instructions">Completion Instructions</h3>
+                    <ol class="instructions">
+                        <li>All tender prices are to be broken down into the following sections.</li>
+                        <li>EACH item included in the price MUST be listed with its price indicated i.e. each item must be individually priced.</li>
+                        <li>Should any lump sum figures be included they will require to be broken down prior to any order being issued.</li>
+                        <li>Plant and Material Costs should be entered as basic costs on separate quote lines. The anticipated percentage addition mark-up should be entered as a separate quote line.</li>
+                        <li>Failure to provide broken down costing as requested may result in your tender being returned for re-submission.</li>
+                    </ol>
+
+                    <a id="QuoteLines"></a>
+                    <div id="QuoteLinesBody"></div>
+                    if (Model.HasQueryPending)
+                    {
+                        <div class="validation-summary-errors center-text">If the Total Value of the Quote is amended, be sure to Delete the existing Quote Document below and upload an amended version.</div>
+                    }
+                    <a id="QuoteDocuments"></a>
+    <table id="upload-docs" class="default-top-margin nonclickable">
+        <thead>
+            <tr>
+                <th colspan="3" class="col-span">Please upload the following documents:</th>
+            </tr>
+            <tr>
+                <th>Document Type</th>
+                <th class="center-text">Action</th>
+                <th class="center-text">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="doc-symbol" data-missing-class="doc-missing" data-missing-text="Required">
+                <td>@QuoteDocumentType.GetDescription(QuoteDocumentType.QuoteTemplate)</td>
+                <td class="center-text">@ShowDocumentLink(Model.QuoteTemplateUpload)</td>
+                <td class="center-text">@ShowDocumentStatus(Model.QuoteTemplateUpload.IsExistingFile, false)</td>
+            </tr>
+            <tr class="doc-symbol" data-missing-class="doc-optional" data-missing-text="Optional">
+                <td>@QuoteDocumentType.GetDescription(QuoteDocumentType.CustomQuote)</td>
+                <td class="center-text">@ShowDocumentLink(Model.CustomQuoteUpload)</td>
+                <td class="center-text">@ShowDocumentStatus(Model.CustomQuoteUpload.IsExistingFile, true)</td>
+            </tr>
+        </tbody>
+    </table>
+
+                    var submitRouteValues = new RouteValueDictionary { { "jobRef", this.Model.Job.JobRef } };
+                    if (Model.HasQueryPending)
+                    {
+                        submitRouteValues.Add("qasid", Model.QuoteApprovalScenarioId.Value);
+                    }
+
+                    using (Html.BeginForm("SubmitQuote", "Quote", submitRouteValues, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        if (Model.HasQueryPending)
+                        {
+                            <p>
+                                <input type="submit" value="Update Submitted Quote" class="btn btn-primary" />
+                            </p>
+                        }
+                        else
+                        {
+                            <hr class="default-top-margin" />
+                            <p>
+                                Click on the Submit Quote button below to send your quote to @Booker.Common.CompanyStrings.AbbreviatedName. Please note that you won't be able
+                                to make any further changes after the quote has been submitted
+                            </p>
+                            <p>
+                                <input type="submit" value="Submit Quote" class="btn btn-primary" />
+                            </p>
+                        }
+                    }
+
+                    <div class="default-top-margin clear-fix">
+                        <hr />
+                        @if ((Model.HasQueryPending) && (Model.QuoteApprovalScenarioId.HasValue))
+                        {
+                            @Html.ActionLink("<< Back to Query", "Query", "Quote", new {jobRef = Model.Job.JobRef, id = Model.QuoteApprovalScenarioId.Value}, null)
+                        }
+                        else
+                        {
+                            @Html.ActionLink("<< Back to Jobs Awaiting Quote", "JobsAwaitingQuote", "Supplier")
+                        }
+                    </div>
+
+                    @section scripts {
+                        @Scripts.Render("~/bundles/jqueryval")
+                        @Scripts.Render("~/bundles/jquerydatatables")
+                        @Scripts.Render("~/bundles/handlebars")
+                        @Scripts.Render("~/bundles/placeholderpolyfill")
+                        @Scripts.Render("~/bundles/supplierhelpers")
+                        @Scripts.Render("~/bundles/quoteline")
+                    }
+                }
+                else
+                {
+                        <p>The requested job was not found so you cannot register a quote.</p>
+                }
+                @helper ShowDocumentStatus(bool isExisting, bool isOptional = false)
+                {
+                    if (isExisting)
+                    {
+                        <span class="doc-uploaded">Uploaded</span>
+                    }
+                    else
+                    {
+                        if (isOptional)
+                        {
+                            <span class="doc-optional">Optional</span>
+                        }
+                        else
+                        {
+                            <span class="doc-missing">Upload Required</span>
+                        }
+                    }
+}
+                    @helper ShowDocumentLink(UploadFileViewModel fileUploadModel)
+                {
+                    if (fileUploadModel.IsExistingFile)
+                    {
+                        @Html.ActionLink("Delete", "DeleteQuoteDocument", "Quote", new {uploadType = fileUploadModel.UploadType, jobRef = Model.Job.JobRef}, new {@class = "delete-doc"})
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Upload", "UploadQuoteDocument", "Quote", new {uploadType = fileUploadModel.UploadType, jobRef = Model.Job.JobRef}, null)
+                    }
+}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="DeleteQuoteDocModal" tabindex="-1" role="dialog" aria-labelledby="DeleteQuoteDocLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="DeleteQuoteDocLabel">Delete Document</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Content goes here. -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="DeleteQuoteDoc">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="DeleteLineModal" tabindex="-1" role="dialog" aria-labelledby="DeleteLineLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="DeleteLineLabel">Delete Quote Line</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Content goes here. -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="DeleteLine">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="NewLineModal" tabindex="-1" role="dialog" aria-labelledby="NewLineLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="NewLineLabel">Add New Line to Quote</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Content goes here. -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="AddNewLine">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="EditLineModal" tabindex="-1" role="dialog" aria-labelledby="EditLineLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="EditLineLabel">Edit Quote Line</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Content goes here. -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="EditLine">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script id="quote-line-template" type="text/x-handlebars-template">
+        <table id="detail-lines" class="default-bottom-margin nonclickable">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th class="right-text">Quantity</th>
+                    <th class="right-text">Unit Price ($)</th>
+                    <th class="right-text">Value ($)</th>
+                    <th class="center-text">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each QuoteLines}}
+                <tr data-id="{{Id}}">
+                    <td><a class="edit-detail-line" href="/Quote/EditQuoteLine?jobRef={{JobRef}}&id={{Id}}">{{Description}}</a></td>
+                    <td>{{QuoteLineTypeDescription}} {{#if_eq QuoteLineTypeDescription 'Parts'}}({{PartNumber}}){{/if_eq}}</td>
+                    <td class="right-text">{{Quantity}}</td>
+                    <td class="right-text">{{decimal UnitPrice}}</td>
+                    <td class="right-text in-total-line-value">{{decimal LineValue}}</td>
+                    <td class="center-text"><a class="delete-detail-line" href="/Quote/DeleteQuoteLine?jobRef={{JobRef}}&id={{Id}}">Delete</a></td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="6" style="text-align: center">
+                        There are no Quote Lines.
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="hide-right-border">
+                        @Html.ActionLink("Add New Line to Quote", "CreateQuoteLine", "Quote", new { jobRef = @Model.Job.JobRef }, new { @class = "add-detail-line" })
+                    </td>
+                    <td class="right-text">Total Value ($):</td>
+                    <td class="right-text"><span id="TotalLineValue" class="cost">{{decimal QuoteValue}}</span></td>
+                    <td>&nbsp;</td>
+                </tr>
+            </tfoot>
+        </table>
+    </script>

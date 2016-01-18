@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = ViewBag.Title ?? "Confirmation";
+    ViewBag.MenuSection = "admin-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title</h2>
+                @if (ViewBag.Message != null)
+                {
+                    <strong>@ViewBag.Message</strong>
+                }
+            </div>
+        </div>
+    </div>
+</div>

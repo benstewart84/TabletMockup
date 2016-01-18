@@ -1,0 +1,10 @@
+﻿@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.DeleteFileViewModel
+
+@{
+    ViewBag.Title = "Delete Creditnote Document";
+    ViewBag.MenuSection = "invoices-menu";
+}
+
+<h2 class="center-text">Delete @Html.InvoiceDocumentTypeText(Model.UploadType)</h2>
+@Html.Partial("_DeleteUploadedFile", Model)

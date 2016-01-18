@@ -1,0 +1,106 @@
+﻿@using Booker.WebUI.Models
+@model LeadModel
+
+@{
+    ViewBag.Title = "Member Sign up";
+    ViewBag.MenuSection = "Home-menu";
+
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 whiteBackground">
+                <h2>@ViewBag.Title</h2>
+
+                @Html.HiddenFor(m => m.Id)
+                @Html.AntiForgeryToken()
+
+                @Html.ValidationSummary(false, "We're missing some information:")
+                <div class="row">
+                    <div class="col-xs-4 ">
+                        <div class="form-group">
+                            <span><strong>Lead ID:</strong></span> @Model.Id
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="form-group">
+                            <span><strong>Member Name:</strong></span> @Model.Name
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <div class="form-group">
+                            <span><strong>Member Number:</strong></span><span id="MemberId"> @Model.MemberNumber</span>
+                        </div>
+                    </div>
+                    <div class="col-xs-4 ">
+                        <div class="form-group">
+                            <span><strong>Contact Number:</strong></span> @Model.ContactNumber
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><br />
+
+        <div id="tabs">
+            <ul>
+                <li><a href="#tabs-1">Member Sites </a></li>
+                <li><a href="#tabs-2">Services and Packages</a></li>
+                @*<li><a href="#tabs-3">Sizes & Packages</a></li>*@
+            </ul>
+            <div id="tabs-1">
+                @Html.Partial("_MemberSites")
+            </div>
+            <div id="tabs-2">
+                @Html.Action("GetAllPpmTypePackages", new { @id = @Model.MemberNumber })
+            </div>
+            @*<div id="tabs-3">
+                @Html.Action("GetPackagesInfo")
+            </div>*@
+        </div>
+        
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="form-group default-top-margin">
+                  @Html.ActionLink("<< Back to Lead", "FollowUpLead", "HelpDesk", new { id = Model.Id },null)
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryvalcustom")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jquerydatatables")
+    @Scripts.Render("~/bundles/handlebars")
+    @Scripts.Render("~/bundles/membersignup")
+    @Scripts.Render("~/bundles/commonhelpers")
+
+    <script>
+        var helper = new CommonHelpers();
+        helper.initialiseDatePickers();
+
+        // Calling different action methods based on the button clicked
+
+        $(".submitForSignupApproval").click(function() {
+            var form = $("form#PackageSubscription");
+            form.attr("action", "@Url.Action("SignupMember", "HelpDesk")");
+            form.submit();
+        });
+
+        $(".submitForQuote").click(function() {
+            var form = $("form#PackageSubscription");
+            form.attr("action", "@Url.Action("SaveQuoteForMember", "HelpDesk")");
+            form.submit();
+
+        });
+    </script>
+}
+@section css {
+    @Styles.Render("~/Content/themes/base/css")
+}

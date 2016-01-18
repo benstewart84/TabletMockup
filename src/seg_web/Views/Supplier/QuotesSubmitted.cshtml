@@ -1,0 +1,32 @@
+﻿@using Booker.WebUI.Helpers
+@model IEnumerable<Booker.WebUI.Models.SubmittedSupplierQuoteModel>
+
+@{
+    ViewBag.Title = "Quotes Submitted";
+    ViewBag.MenuSection = "quotes-menu";
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+
+                <table id="supplier-quotes" class="responsive" data-empty-table="There are no submitted quotes">
+                    <thead>
+                        <tr><th>Job Ref</th><th>Site</th><th>Quote Ref</th><th>Quote Date</th><th>Quote Value (£)</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr><td>@Html.IntOrEmptyString(item.JobRef)</td><td>@item.SiteName</td><td>@item.QuoteRef</td><td>@Html.TextOrEmptyString(item.QuoteDate.ToShortDateString())</td><td class="right-text">@Html.DecimalToCurrencyString(item.QuoteValue)</td><td>@item.Status</td></tr>
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

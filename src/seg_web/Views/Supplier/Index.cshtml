@@ -1,0 +1,62 @@
+﻿@model Booker.WebUI.Models.SupplierHomePageModel
+
+@{
+    ViewBag.Title = "Home";
+    ViewBag.MenuSection = "home-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+
+                <h2>Welcome to the @Booker.Common.CompanyStrings.ShortName Portal</h2>
+
+                <table id="summary" class="clicktable">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th class="right-text">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(Model.IsSupplyOnly) {
+                            @CreateSupplierActionRow("Orders Awaiting Invoice", "OrdersAwaitingInvoice", Model.NumberOfOrdersAwaitingInvoice)
+                            @CreateSupplierActionRow("Submitted Invoices", "InvoicesSubmitted", Model.NumberOfSubmittedInvoices)
+                        }
+                        else
+                        {
+                            @CreateSupplierActionRow("Jobs Awaiting Confirmation", "JobsAwaitingConfirmation", Model.NumberOfJobsAwaitingConfirmation)
+                            @CreateSupplierActionRow("Jobs Awaiting ETA", "JobsAwaitingETA", Model.NumberOfJobsAwaitingETA)
+                            @CreateSupplierActionRow("Open Jobs", "JobsOutstanding", Model.NumberOfJobsOutstanding)
+                            @CreateSupplierActionRow("Jobs Awaiting Certificate", "JobsAwaitingCertificate", Model.NumberOfJobsAwaitingCertificate)
+                            @*@CreateSupplierActionRow("Certificates in Query", "JobsWithCertificateInQuery", Model.NumberOfCertificatesInQuery)*@
+                            @CreateSupplierActionRow("Orders Awaiting Invoice", "OrdersAwaitingInvoice", Model.NumberOfOrdersAwaitingInvoice)
+                            @*@CreateSupplierActionRow("Invoices in Query", "InvoicesInQuery", Model.NumberOfInvoicesInQuery)
+                            @CreateSupplierActionRow("Jobs Awaiting Quote", "JobsAwaitingQuote", Model.NumberOfJobsAwaitingQuote)
+                            @CreateSupplierActionRow("Quotes with Queries Pending", "QuotesWithQueryPending", Model.NumberOfQuotesWithQueryPending)
+                            @CreateSupplierActionRow("Quotes Submitted", "QuotesSubmitted", Model.NumberOfQuotesSubmitted)
+                            @CreateSupplierActionRow("Credits In Query", "CreditNotesInQuery", Model.NumberOfCreditNotesInQuery)*@
+                            @CreateSupplierActionRow("Uplift Requests", "UpliftRequests", Model.NumberOfUpliftRequests)
+                        }
+                    </tbody>
+                    <tfoot>
+                    
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@helper CreateSupplierActionRow(string linkText, string actionName, int num)
+{
+    <tr>
+        <td>@Html.ActionLink(linkText, actionName, "Supplier")</td>
+        <td class="right-text">@string.Format("{0:0}", num)</td>
+    </tr>
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

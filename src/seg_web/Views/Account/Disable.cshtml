@@ -1,0 +1,33 @@
+﻿@model Booker.WebUI.Models.SelectUserModel
+@{
+    ViewBag.Title = "Disable account";
+    ViewBag.MenuSection = "admin-menu";
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.ValidationSummary()
+                    @Html.AntiForgeryToken()
+                    ViewBag.Prompt = "Are you sure you wish to disable this account?";
+                    @Html.Partial("_SelectUserPartial", Model)
+                }
+                @section scripts
+{
+                    @Scripts.Render("~/bundles/jquerydatatables")
+                }
+                @section css{
+                    <style>
+                        select {
+                            width: auto;
+                        }
+                    </style>
+                }
+            </div>
+        </div>
+    </div>
+</div>

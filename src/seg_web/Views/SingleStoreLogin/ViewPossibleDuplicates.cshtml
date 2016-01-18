@@ -1,0 +1,53 @@
+﻿@model List<Booker.Data.Entities.PotentialDuplicate>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-md-12 center-text">
+            <h4>Possible Duplicates</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="duplicate-rows" class="responsive clicktable" data-empty-table="No current duplicates.">
+                <thead>
+                <tr>
+                    <th>Fault Id</th>
+                    <th>Asset Tag</th>
+                    <th>Fault Service</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Reason for Match</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var duplicate in Model)
+                {
+                    <tr id="duplicate-row">
+                        <td>@duplicate.FaultId</td>
+                        <td>@duplicate.AssetTag</td>
+                        <td>@duplicate.FaultService</td>
+                        <td>@duplicate.Location</td>
+                        <td>@duplicate.FaultDescription</td>
+                        <td>@duplicate.DuplicateReason</td>
+                    </tr>
+                }
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquerydatatables")
+<script>
+    $(document).ready(function () {
+        $("#duplicate-rows tr").click(function () {
+            var fault = $(this).find('td:first').html();
+            window.location.href = "/SingleStoreLogin/RaiseQuery?faultId=" + fault;
+            @*alert('Call the QueryJob routine for Fault: ' + fault);
+            $.ajax({
+                type: "POST",
+                data: { faultId: fault },
+                url: '@Url.Action("RaiseQuery")'
+            });*@
+        });
+    });
+</script>

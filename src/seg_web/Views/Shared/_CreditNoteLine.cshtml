@@ -1,0 +1,43 @@
+﻿@using Booker.WebUI.Helpers
+@using Booker.Common
+@model Booker.WebUI.Models.CreditNoteLineModel
+
+@using (Html.BeginForm("CreateCreditNoteLine", "Supplier", null, FormMethod.Post, new { id = "CreditNoteLineForm" }))
+{
+    <div id="CreditNoteLineError" class="validation-summary-errors" style="display: none">Sorry, there was an unexpected error processing your request.</div>
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.HeaderId)
+    @Html.HiddenFor(model => model.WorkOrderRef)
+
+    <div class="form-group">
+        <strong>Type:</strong>
+        @Html.BootstrapDropDownListFor(model => model.CreditNoteLineTypeId, Model.CreditNoteLineTypeSelectList)
+    </div>
+    <div class="form-group" style="@(Model.CreditNoteLineTypeId == InvoiceLineTypes.Parts ? "" : "display:none")">
+        <strong>Part Number:</strong>
+        @Html.BootstrapTextBoxFor(model => model.PartNumber)
+    </div>
+    <div class="form-group">
+        <strong>Description:</strong>
+        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @placeholder = "Enter your Description" })
+    </div>
+    <div class="form-group">
+        <strong>Quantity:</strong>
+        @Html.TextBoxFor(model => model.Quantity, "{0:F0}", new { placeholder = "Enter your Quantity", @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <strong>Unit Price (£):</strong>
+        @Html.TextBoxFor(model => model.UnitPrice, "{0:F2}", new { placeholder = "Enter your Unit Price", @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <strong>Line Value (£):</strong>
+        @Html.DisplayFor(model => model.LineValue, "LineValue")
+    </div>
+
+   
+}
+<script>
+    window.cf = window.cf || {};
+    cf.partsLineType = "@InvoiceLineTypes.Parts";
+</script>

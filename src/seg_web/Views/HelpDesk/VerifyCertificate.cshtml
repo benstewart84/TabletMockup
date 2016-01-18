@@ -1,0 +1,100 @@
+﻿@using Booker.Common
+@model Booker.WebUI.Models.ValidateCertificateModel
+@{
+    ViewBag.Title = "Certificate Validation";
+    ViewBag.MenuSection = "certificates-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title</h2>
+                @using (Html.BeginForm("VerifyCertificate", "HelpDesk", new {jobRef = Request.QueryString["jobRef"]}, FormMethod.Post, new {@class = "input-form", style = "overflow: hidden"}))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.JobRef)
+                    @Html.ValidationSummary(false, "We're missing some information:")
+                    <div class="doc-view">
+                        <iframe src="@Url.Action("ViewCertificate", "Certificate", new {jobRef = Request.QueryString["jobRef"]})" scrolling="no" seamless="true"></iframe>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <strong>Job Ref:</strong> @Request.QueryString["jobRef"]
+                        </div>
+                        <div class="form-group">
+                            <strong>Job Type:</strong> @Model.JobType
+                        </div>
+                        <div class="form-group">
+                            <strong>Supplier Reference:</strong> @Model.SupplierReference
+                        </div>
+                        <div class="form-group">
+                            <strong>Site Name:</strong> @Model.SiteName
+                        </div>
+                        <div class="form-group">
+                            <strong>
+                                @(Model.JobType == JobTypes.PPM ? "PPM Type:" : "Fault Service:")
+                            </strong> @Model.FaultServiceDescription
+                        </div>
+                        <div class="form-group">
+                            <strong>Notes:</strong> @Model.Notes
+                        </div>
+                        <div class="form-group">
+                            <strong>Reference Number:</strong> @Model.CertificateNumber
+                        </div>
+
+                    </div>
+                    <p>
+                        <input type="submit" value="Validate Document" class="btn btn-primary"/>
+                        <input id="QueryDocument" value="Query Document" class="btn btn-warning" data-toggle="modal" data-target="#QueryCertificateModal" />
+                    </p>
+                }
+            </div>
+            <div class="default-top-margin clear-fix">
+                <hr/>
+                @if (Model.Status == CertificateStatus.Unverified)
+                {
+                    @Html.ActionLink("<< Back to Certificates to be Reviewed", "UnverifiedCertificates", "HelpDesk", null, new {id = "BackButton"});
+                }
+                else
+                {
+                    @Html.ActionLink("<< Back to Certificates with Query Response", "CertificatesWithQueryResponse", "HelpDesk", null, new {id = "BackButton"});
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="QueryCertificateModal" tabindex="-1" role="dialog" aria-labelledby="QueryCertificateLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Query Document</h4>
+            </div>
+            <div class="modal-body">
+                <div id="QueryError" class="validation-summary-errors" style="display: none">Sorry, there was an unexpected error processing your request.</div>
+                <form>
+                    <div class="form-group">
+                        <label for="Reason" class="control-label">Reason:</label>
+                        <select id="Reason">
+                            <option>Incorrect certificate reference</option>
+                            <option>Image unreadable</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group certificate-query-other">
+                        <label for="Other" class="control-label">Specify:</label>
+                        <textarea class="form-control" id="Other"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="SaveQuery">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/verifycertificate")
+}

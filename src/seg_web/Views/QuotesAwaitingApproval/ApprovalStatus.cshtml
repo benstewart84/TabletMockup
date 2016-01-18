@@ -1,0 +1,28 @@
+﻿@model Booker.WebUI.Models.QuotesAwaitingApproval.QasApprovalStatusViewModel
+
+@{
+    ViewBag.Title = Model.Status;
+    ViewBag.MenuSection = "quotes-menu";
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@Model.Status</h2>
+                <p>
+                    @Model.StatusDescription
+                </p>
+                @using (Html.BeginForm())
+                {
+                    <fieldset>
+                        <legend>@Model.Status</legend>
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.QuoteApprovalScenarioId)
+                        @Html.HiddenFor(model => model.ReturnUrl)
+                        <input type="submit" value="Continue" class="btn btn-primary" style="margin: 10px" />
+                    </fieldset>
+                }
+            </div>
+        </div>
+    </div>
+</div>

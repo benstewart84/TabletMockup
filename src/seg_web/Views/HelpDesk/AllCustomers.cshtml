@@ -1,0 +1,59 @@
+﻿@using Booker.WebUI.Helpers
+@using Booker.WebUI.Models.Member
+@model IEnumerable<MemberModel>
+
+@{
+    ViewBag.Title = "Customers";
+    ViewBag.MenuSection = "customers-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">All Customers</h2>
+
+                <table id="all-customers" class="responsive clicktable" data-empty-table="There are no customers at present!">
+                    <thead>
+                        <tr>
+                            <th>Member Number</th>
+                            <th>Member Name</th>
+                            <th>Members Auto Renewed</th>
+                            <th>Status</th>
+                        
+                            <th class="hidden">Follow Up</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+
+                            <tr>
+                                <td>@item.CustomerMemberNumber</td>
+                                <td>@item.Name</td>
+                                <td>@SiteHelper.ConvertTrueFalseToYesNo(item.AutoRenewal.ToString())</td>
+                                <td>@SiteHelper.GetMemberStatusById(item.MemberStatus)</td>
+                              
+                                <td class="hidden">@Html.ActionLink("Follow Up", "ProcessMemberAutoRenewal", "HelpDesk", new { memberNumber = @item.CustomerMemberNumber }, null)</td>
+                            </tr>
+
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="form-group default-top-margin">
+                    @Html.ActionLink("<< Back to Home", "Index", "HelpDesk", null, null)
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

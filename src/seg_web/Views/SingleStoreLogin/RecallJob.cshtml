@@ -1,0 +1,65 @@
+﻿@using Booker.Common
+@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.RecallJobModel
+@{
+    ViewBag.Title = "Recall Job";
+    ViewBag.MenuSection = "jobs-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title</h2>
+
+                @using (Html.BeginForm("RecallJob", "SingleStoreLogin", new {jobRef = Request.QueryString["jobRef"]}, FormMethod.Post, new {@class = "input-form"}))
+                {
+                    if (ViewData.Model == null)
+                    {
+                        <div class="col-md-12 alert-danger center-text">
+                            <p>An Error occurred while retreiving this job</p>
+                        </div>
+                    }
+                    @Html.HiddenFor(m => m.FaultId)
+                    @Html.HiddenFor(m => m.DateLogged)
+                    @Html.HiddenFor(m => m.FaultDescription)
+                    @Html.HiddenFor(m => m.Location)
+                    @Html.HiddenFor(m => m.Notes)
+                    @Html.HiddenFor(m => m.StoreName)
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(false, "We're missing some information:")
+                    <div class="form-group">
+                        <strong>Job Ref:</strong> @Request.QueryString["jobRef"]
+                    </div>
+                    <div class="form-group">
+                        <strong>Store Name:</strong> @Model.StoreName
+                    </div>
+                    <div class="form-group">
+                    <strong>Fault Service:</strong> @Model.FaultDescription
+                    </div>
+                    <div class="form-group">
+                        <strong>Location:</strong> @Model.Location
+                    </div>
+                    <div class="form-group">
+                        <strong>Notes:</strong> @Model.Notes
+                    </div>
+                    <div class="form-inline hide">
+                        <strong>Recall Reason:</strong>
+                        @Html.BootstrapDropDownListFor(m => m.ReasonId, new SelectList(Model.RecalReasonSelectList, "Value", "Text"))
+                    </div>
+                    <div class="form-group hide">
+                        <strong>Recall Notes:</strong>@Html.TextAreaFor(m => m.RecallNotes)
+                    </div>
+                    <p>
+                        <input name="recall" id="Recall" type="submit" value="Recall" class="btn btn-primary"/>
+                        <input name="recall" id="Cancel" type="submit" value="Cancel" class="btn btn-danger"/>
+                    </p>
+                }
+                <div class="default-top-margin clear-fix">
+                    <hr />
+                    @Html.ActionLink("<< Back to Recently Completed Jobs", "RecentlyCompletedJobs", "SingleStoreLogin")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

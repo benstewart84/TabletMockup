@@ -1,0 +1,63 @@
+﻿@using Booker.WebUI.Helpers
+@using Booker.Common
+@using System
+@using Booker.WebUI.Extensions
+@model Booker.WebUI.Models.JobsAwaitingQuote.JobsAwaitingQuoteViewModel
+@{
+    ViewBag.Title = "Quotes";
+    ViewBag.MenuSection = "quotes-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+
+                <table id="store-jobs-awaiting-quote" class="responsive clicktable" data-empty-table="There are no quotes">
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Date</th>
+                            <th>Supplier</th>
+                            <th>Quote due date</th>
+                            <th>Fault Service</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var job in Model.Jobs)
+                        {
+                            var viewable = job.QuoteStatus == "Awaiting Approval";
+                            var rowClass = viewable ? "clickable" : "";
+                            <tr class="@rowClass">
+                                <td>
+                                    @if (viewable)
+                                    {
+                                        @Html.ActionLink(job.JobRef.ToString(), "ViewQuote", new { id = job.JobRef })
+                                    }
+                                    else
+                                    {
+                                        @job.JobRef
+                                    }
+                                </td>
+                                <td>@Html.TextOrEmptyString(job.DateRequested.ToCurrentCultureDateTime())</td>
+                                <td>@(Model.SupplierLookup.ContainsKey(job.SupplierCode) ? Model.SupplierLookup[job.SupplierCode] : job.SupplierCode)</td>
+                                <td @if (job.DateRequested.Value.AddDays(QuoteDueDate.QuoteDueDaysAfterRequest).Date < DateTime.Today) { @: class="warning-text"
+                                                                                                    }>
+                                    @Html.TextOrEmptyString(job.DateRequested.Value.AddDays(QuoteDueDate.QuoteDueDaysAfterRequest).ToCurrentCultureDateTime())
+                                </td>
+                                <td>@job.FaultServiceDescription</td>
+                                <td>@job.QuoteStatus</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

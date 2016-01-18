@@ -1,0 +1,45 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@model IEnumerable<Booker.WebUI.Models.JobModel>
+@{
+    ViewBag.Title = "Recently Completed Jobs";
+    ViewBag.MenuSection = "jobs-menu";
+    // Used to determine navigation link in shared page that is accessed from this page.
+    TempData["PageOrigin"] = ViewContext.RouteData.Values["action"];
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+                <table id="awaiting-certificate" class="responsive clicktable" data-empty-table="There are no recently completed jobs">
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Date Logged</th>
+                            <th>Fault Service</th>
+                            <th>Location</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="clickable">
+                                <td>@Html.ActionLink(string.Format("{0:0}", item.JobRef), "RecallJob", "SingleStoreLogin", new { jobRef = item.JobRef }, null)</td>
+                                <td>@Html.TextOrEmptyString(@item.DateRequested.ToCurrentCultureDateTime())</td>
+                                <td>@Html.TextOrEmptyString(@item.FaultServiceDescription)</td>
+                                <td>@Html.TextOrEmptyString(@item.Location)</td>
+                                <td>@Html.TextOrEmptyString(@item.Notes)</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

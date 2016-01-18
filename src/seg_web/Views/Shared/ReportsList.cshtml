@@ -1,0 +1,69 @@
+﻿@using Booker.Data.Entities
+@model List<Report>
+@{
+    ViewBag.Title = "Home";
+    ViewBag.MenuSection = "reports-menu";
+    var controller = HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString();
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">All Reports</h2>
+
+                <table id="all-customers" class="responsive clicktable" data-empty-table="There are no reports available at present!">
+                    <thead>
+                        <tr>
+                            <th>Report Number</th>
+                            <th>Report Title</th>
+                            <th>Report Description</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th class="hidden">Open Up</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Title</td>
+                                <td>@item.Description</td>
+                                <td>@item.Category</td>
+                                <td>@item.Status</td>
+
+                                <td class="hidden">@Html.ActionLink("Report", "Report", @controller, new { id = @item.Id }, null)</td>
+                            </tr>
+
+                        }
+
+                      
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="form-group default-top-margin">
+                    @Html.ActionLink("<< Back to Home", "Index", "HelpDesk", null, null)
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryvalcustom")
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

@@ -1,0 +1,15 @@
+﻿@model Booker.Data.Entities.JobAwaitingClosedown
+
+@using (Html.BeginForm("QueryAJob", "SingleStoreLogin", null, FormMethod.Post, new { id = "JobQueryForm" }))
+{
+    <div id="ErrorMessage" class="validation-summary-errors" style="display: none">Sorry, there was an unexpected error processing your request.</div>
+    @Html.AntiForgeryToken()  
+    @Html.HiddenFor(m => m.ContractorReference)
+    @Html.HiddenFor(m => m.JobRef)
+    @Html.HiddenFor(m => m.VerifiedComplete)
+
+    <div class="form-group">
+        <strong>Note:</strong>
+        <textarea id="Note" class="form-control" required></textarea>
+    </div>
+}

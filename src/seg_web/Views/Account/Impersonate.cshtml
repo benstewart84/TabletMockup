@@ -1,0 +1,33 @@
+﻿@model Booker.WebUI.Models.SelectUserModel
+@{
+    ViewBag.Title = "Impersonate";
+    ViewBag.MenuSection = "admin-menu";
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">Impersonate</h2>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.ValidationSummary()
+                    @Html.AntiForgeryToken()
+
+                    @Html.Partial("_SelectUserPartial", Model)
+                }
+                @section scripts
+{
+                    @Scripts.Render("~/bundles/jquerydatatables")
+                }
+                @section css{
+                    <style>
+                        select {
+                            width: auto;
+                        }
+                    </style>
+                }
+            </div>
+        </div>
+    </div>
+</div>

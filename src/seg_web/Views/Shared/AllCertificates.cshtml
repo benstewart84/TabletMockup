@@ -1,0 +1,88 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@using Booker.WebUI.Models
+@model AllCertificatesModel
+
+@{
+    ViewBag.Title = "All Certificates";
+    ViewBag.MenuSection = "certificates-menu";
+}
+@section css {
+    @Styles.Render("~/Content/themes/base/css")
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>Find Certificates</h2>
+                <div class="main-content">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+                        <fieldset class="header-fields">
+                            <legend class="hidden">Search</legend>
+                            <div class="header-row" style="height: 110% !important;">
+                                <div class="editor-for">
+                                    @Html.LabelFor(model => model.DateFrom)
+                                    @Html.EditorFor(model => model.DateFrom)
+                                    @Html.ValidationMessageFor(model => model.DateFrom)
+                                </div>
+                                <div class="editor-for">
+                                    @Html.LabelFor(model => model.DateTo)
+                                    @Html.EditorFor(model => model.DateTo)
+                                    @Html.ValidationMessageFor(model => model.DateTo)
+                                </div>
+                                <div><br/>
+                                    <input type="submit" value="Find" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </fieldset>
+                    }
+                    @if (Model.JobCertificates != null)
+                    {
+                        <table id="unverified-certificates" class="responsive clicktable" data-empty-table="There are no Certificates to be Reviewed.">
+                            <thead>
+                                <tr>
+                                    <th>Job Ref</th>
+                                    <th>Job Type</th>
+                                    <th>Site</th>
+                                    <th>Fault Service Description</th>
+                                    <th>Supplier</th>
+                                    <th>Certificate Number</th>
+                                    <th>Status</th>
+                                    <th>Certificate Link</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.JobCertificates)
+                                {
+                                    <tr>
+                                        @*<td>@Html.ActionLink(string.Format("{0:0}", item.JobRef), "VerifyCertificate", "HelpDesk", new { jobRef = item.JobRef, status = CertificateStatus.Unverified }, null)</td>*@
+                                        <td>@Html.TextOrEmptyString(@item.JobRef.ToString())</td>
+                                        <td>@Html.TextOrEmptyString(@item.JobType)</td>
+                                        <td>@Html.TextOrEmptyString(@item.SiteName)</td>
+                                        <td>@Html.TextOrEmptyString(@item.FaultServiceDescription)</td>
+                                        <td>@Html.TextOrEmptyString(@item.SupplierName)</td>
+                                        <td>@Html.TextOrEmptyString(@item.CertificateNumber)</td>
+                                        <td>@Html.TextOrEmptyString(@item.CertificateStatus)</td>
+                                        <td class="center-text">
+                                            @Html.ActionLink("View", "ViewCertificate", "Certificate", new { jobRef = @item.JobRef }, new { @class = "ViewCert", target = "_blank" })
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot></tfoot>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+   
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jquerydatatables")
+    @Scripts.Render("~/bundles/supplierhelpers")
+}

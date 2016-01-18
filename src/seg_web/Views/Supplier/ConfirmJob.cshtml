@@ -1,0 +1,104 @@
+﻿@using Booker.WebUI.Helpers
+@using Booker.Common
+@using Booker.WebUI.Extensions
+@model Booker.WebUI.Models.ConfirmJobModel
+@{
+    ViewBag.Title = "Job Confirmation";
+    ViewBag.MenuSection = "jobs-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title</h2>
+
+                @using (Html.BeginForm("ConfirmJob", "Supplier", new {jobRef = Request.QueryString["jobRef"]}, FormMethod.Post, new {@class = "input-form"}))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(false, "We're missing some information:")
+                    if (ViewData.Model.JobType == null)
+                    {
+                        <div class="col-md-12 alert-danger center-text">
+                            <p>An Error occurred while retreiving this job</p>
+                        </div>
+                    }                    
+                    <div class="form-group">
+                        <strong>Job Ref:</strong> @Request.QueryString["jobRef"]
+                    </div>
+                    <div class="form-group">
+                        <strong>Job Type:</strong> @Model.JobType
+                    </div>
+                    <div class="form-group">
+                        <strong>Store Name:</strong> @Model.SiteName
+                    </div>
+                    <div class="form-group">
+                        <strong>
+                            @(Model.JobType == JobTypes.PPM ? "PPM Type:" : "Fault Service:")
+                        </strong> @Model.FaultServiceDescription
+                    </div>
+                    <div class="form-group">
+                        <strong>Fault Type:</strong> @Model.FaultRisk
+                    </div>
+                    <div class="form-group">
+                        <strong>Priorty:</strong> @Model.FaultPriority
+                    </div>
+                    <div class="form-group">
+                        <strong>Notes:</strong> @Model.Notes
+                    </div>
+                    <div class="form-group">
+                        <strong>Due Date:</strong> @Html.TextOrEmptyString(Model.DueDate.ToCurrentCultureShortDate())
+                    </div>
+                    //if (ViewData.Model.JobType != null)
+                    //{
+                    <p>
+                        @*<button class="btn btn-primary" alt="Accept" onclick="acceptJob('@Request.QueryString["jobRef"]')">Accept</button>
+                        <button class="btn btn-danger" alt="Decline" onclick="declineJob('@Request.QueryString["jobRef"]')">Decline</button>*@
+                        @*                        <input type="submit" value="Confirm" class="btn btn-primary" />*@
+                        <input name="confirm" type="submit" id="accept" value="Accept" class="btn btn-primary"/>
+                        <input name="confirm" type="submit" id="decline" value="Decline" class="btn btn-danger"/>
+                    </p>
+                    @*  }*@
+                }
+                <div class="default-top-margin clear-fix">
+                    <hr/>
+                    @Html.ActionLink("<< Back to Jobs Awaiting Confirmation", "JobsAwaitingConfirmation", "Supplier")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jquerydatatables")
+    @Scripts.Render("~/bundles/supplierhelpers")
+    <script>
+        var helper = new CommonHelpers();
+        helper.initialiseDatePickers();
+
+        function acceptJob(id) {
+            $.ajax({
+                type: "POST",
+                data: { jobRef: id },
+                url: '@Url.Action("AcceptJob")',
+                success: function() { location.reload(); }
+            });
+        }
+
+        function declineJob(id) {
+            debugger;
+            //window.location.href = "/Supplier/DeclineJob?jobRef=" + id;
+            $.ajax({
+                    type: "POST",
+                    data: { jobRef: id },
+                    url: '@Url.Action("DeclineJob")',
+                    success: function () { location.reload(); }
+                });
+        }
+
+    </script>
+}

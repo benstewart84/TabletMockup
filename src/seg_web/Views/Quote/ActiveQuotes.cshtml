@@ -1,0 +1,56 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@model IEnumerable<Booker.WebUI.Models.ActiveQuoteModel>
+
+@{
+    ViewBag.Title = "All Quotes";
+    ViewBag.MenuSection = "quotes-menu";
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+                <table id="active-quotes" class="responsive clicktable" data-empty-table="There are no quotes">
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Site</th>
+                            <th>Date</th>
+                            @if (!User.IsInRole(UserManagementHelper.SiteManagerRoleName) && !User.IsInRole(UserManagementHelper.MemberRoleName))
+                            {
+                                <th>Supplier</th>
+                            }
+                            <th>Quote due date</th>
+                            <th>Fault Service</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.JobRef</td>
+                                <td>@item.SiteName</td>
+                                <td>@Html.TextOrEmptyString(item.DateCreated.ToCurrentCultureDateTime())</td>
+                                @if (!User.IsInRole(UserManagementHelper.SiteManagerRoleName) && !User.IsInRole(UserManagementHelper.MemberRoleName))
+                                {
+                                    <td>@item.SupplierName</td>
+                                }
+                                <td @if (item.DateCreated.Value.AddDays(Booker.Common.QuoteDueDate.QuoteDueDaysAfterRequest).Date < DateTime.Today) { @: class="warning-text"
+                                                                                                                                                                                                           }>
+                                    @Html.TextOrEmptyString(item.DateCreated.Value.AddDays(Booker.Common.QuoteDueDate.QuoteDueDaysAfterRequest).ToCurrentCultureDateTime())
+                                </td>
+                                <td>@item.FaultService</td>
+                                <td>@item.Status</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

@@ -1,0 +1,49 @@
+﻿@using System.Threading
+@using Booker.WebUI.Helpers
+@using Booker.WebUI.Extensions
+@model Booker.WebUI.Models.JobsAwaitingQuote.JobsAwaitingQuoteViewModel
+@{
+    ViewBag.Title = "Jobs Awaiting Quote";
+    ViewBag.MenuSection = "quotes-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+
+                <table id="jobs-awaiting-quote" class="responsive" data-empty-table="There are no jobs awaiting quote">
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Date</th>
+                            <th>Supplier</th>
+                            <th>Quote due date</th>
+                            <th>Site</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var job in Model.Jobs)
+                        {
+                            <tr>
+                                <td>@job.JobRef</td>
+                                <td>@job.DateRequested.ToCurrentCultureDateTime()</td>
+                                @*<td>@(Model.SupplierLookup.ContainsKey(job.SupplierCode) ? Model.SupplierLookup[job.SupplierCode] : string.Empty)</td>*@
+                                <td>@(job.SupplierName)</td>
+                                <td @if (((DateTime)job.DateRequested).AddDays(Booker.Common.QuoteDueDate.QuoteDueDaysAfterRequest).Date < DateTime.Today) { @: class="warning-text"
+                                                                }>
+                                    @(((DateTime)job.DateRequested).AddDays(Booker.Common.QuoteDueDate.QuoteDueDaysAfterRequest).ToCurrentCultureDateTime())
+                                </td>
+                                <td>@job.SiteName</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

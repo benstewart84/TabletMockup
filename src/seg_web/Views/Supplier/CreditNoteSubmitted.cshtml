@@ -1,0 +1,74 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.SupplierCreditNoteModel
+
+@{
+    ViewBag.Title = "Credit Note Submitted";
+    ViewBag.MenuSection = "invoices-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>Credit Note Submitted Successfully</h2>
+                <p>Thank you for submitting your credit Note. The credit Note has been sent to @Booker.Common.CompanyStrings.AbbreviatedName.</p>
+                <table class="horiz-table submission">
+                    <tbody>
+                        <tr>
+                            <th class="right-text w33">Work Order Ref</th>
+                            <td>@Html.TextOrEmptyString(Model.WorkOrder.WorkOrderRef)</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Job Ref</th>
+                            <td>@string.Format("{0:0}", Model.WorkOrder.JobRef)</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Site</th>
+                            <td>@Html.TextOrEmptyString(Model.WorkOrder.SiteName)</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Job Date</th>
+                            <td>@Html.TextOrEmptyString(Model.WorkOrder.AlarmDate.ToCurrentCultureDateTime())</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Invoice Number</th>
+                            <td>@Model.CreditNoteHeaderModel.InvoiceNumber</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Invoice Date</th>
+                            <td>@Model.CreditNoteHeaderModel.CreditNoteDate</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Net Amount (£)</th>
+                            <td>@Html.DecimalToCurrencyString(Model.CreditNoteHeaderModel.NetAmount)</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">VAT Amount (£)</th>
+                            <td>@Html.DecimalToCurrencyString(Model.CreditNoteHeaderModel.VatAmount)</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Gross Amount (£)</th>
+                            <td>@Html.DecimalToCurrencyString(Model.CreditNoteHeaderModel.GrossAmount)</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Date Submitted</th>
+                            <td>@Html.TextOrEmptyString(Model.CreditNoteHeaderModel.SubmissionDateUtc.ToCurrentCultureShortDate())</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="default-top-margin clear-fix">
+                    <hr/>
+                    @if (Model.RedirectToQueryView)
+                    {
+                        @Html.ActionLink("<< Back to Credit Notes in Query", "CreditNotesInQuery")
+                    }
+                    else
+                    {
+                        @Html.ActionLink("<< Back to Home", "Index")
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

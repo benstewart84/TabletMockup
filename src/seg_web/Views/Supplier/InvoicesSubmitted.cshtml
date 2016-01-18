@@ -1,0 +1,64 @@
+﻿@using Booker.WebUI.Helpers
+@using Booker.WebUI.Extensions
+@model IEnumerable<Booker.WebUI.Models.SubmittedSupplierInvoiceModel>
+
+@{
+    ViewBag.Title = "Invoices Submitted";
+    ViewBag.MenuSection = "invoices-menu";
+    ViewBag.TableId = "supplier-invoices";
+    if (ViewBag.IsSupplyOnly)
+    {
+        ViewBag.TableId = "supplyonly-invoices";
+    }    
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+
+                <table id="@ViewBag.TableId" class="responsive" data-empty-table="There are no submitted invoices">
+                    <thead>
+                        <tr>
+                            <th>Order Ref</th>
+                            @if (!ViewBag.IsSupplyOnly)
+                            {
+                                <th>Job Ref</th>
+                                <th>Store</th>
+                            }
+                            <th>Inv Ref</th>
+                            <th>Inv Date</th>
+                            <th>Net ($)</th>
+                            <th>Tax ($)</th>
+                            <th>Gross ($)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.WorkOrderRef</td>
+                                @if (!ViewBag.IsSupplyOnly)
+                                {
+                                    <td>@(item.JobRef == 0 ? "N/A" : string.Format("{0:0}", item.JobRef))</td>
+                                    <td>@item.SiteName</td>
+                                }
+                                <td>@item.InvoiceNumber</td>
+                                <td>@Html.TextOrEmptyString(item.InvoiceDate.ToCurrentCultureShortDate())</td>
+                                <td class="right-text">@Html.DecimalToCurrencyString(item.NetAmount)</td>
+                                <td class="right-text">@Html.DecimalToCurrencyString(item.VatAmount)</td>
+                                <td class="right-text">@Html.DecimalToCurrencyString(item.GrossAmount)</td>
+                                <td>@item.Status</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

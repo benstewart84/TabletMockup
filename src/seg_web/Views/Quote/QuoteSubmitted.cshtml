@@ -1,0 +1,57 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+
+@model Booker.WebUI.Models.SupplierQuoteModel
+
+@{
+    ViewBag.Title = "Quote Submitted";
+    ViewBag.MenuSection = "quotes-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>Quote Submitted Successfully</h2>
+                <p>Thank you for submitting your quote. The quote has been sent to @Booker.Common.CompanyStrings.AbbreviatedName.</p>
+
+                <table class="horiz-table submission">
+                    <tbody>
+                        <tr>
+                            <th class="right-text w33">Job Ref</th>
+                            <td>@string.Format("{0:0}", Model.Job.JobRef)</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Date Requested</th>
+                            <td>@Html.TextOrEmptyString(Model.Job.DateRequested.ToCurrentCultureDateTime())</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Site</th>
+                            <td>@Html.TextOrEmptyString(Model.Job.SiteName)</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Quote Ref</th>
+                            <td>@Model.QuoteHeader.QuoteRef</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Date of Quote</th>
+                            <td>@Html.TextOrEmptyString(Model.QuoteHeader.QuoteDate.ToCurrentCultureDateTime())</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Quote Value (£)</th>
+                            <td>@Html.DecimalToCurrencyString(Model.QuoteHeader.QuoteValue)</td>
+                        </tr>
+                        <tr>
+                            <th class="right-text">Date Submitted</th>
+                            <td>@Html.TextOrEmptyString(Model.QuoteHeader.SubmissionDateUtc.ToCurrentCultureDateTime())</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="default-top-margin clear-fix">
+                    <hr />
+                    @Html.ActionLink("<< Back to Jobs Awaiting Quote", "JobsAwaitingQuote", "Supplier")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,74 @@
+﻿@using System.Web.Mvc.Html
+@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@model Booker.Data.Entities.ViewQuoteApprovalScenario
+@{
+    ViewBag.Title = "Query History";
+    ViewBag.MenuSection = "quotes-menu";
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title</h2>
+                <table id="quotes-table">
+                    <thead>
+                        <tr>
+                            <th>Job ID</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Main Type</th>
+                            <th>Sub Type</th>
+                            <th>Value (£)</th>
+                            <th>Supplier</th>
+                            <th>Queried</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Html.IntOrNaString(Model.JobID)</td>
+                            <td>@Html.TextOrEmptyString(Model.Created.ToCurrentCultureDateTime())</td>
+                            <td>@Model.Description</td>
+                            <td>@Model.MainType</td>
+                            <td>@Model.SubType</td>
+                            <td class="right-text">@Html.DecimalToCurrencyString(Model.Cost)</td>
+                            <td>@Html.AsCommaSeparatedList(Model.Suppliers, (sup) => sup.Supplier)</td>
+                            <td>@Html.BoolToString(Model.Queried)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+                <table id="query-table">
+                    <thead>
+                        <tr>
+                            <th>Query Date</th>
+                            <th>Query By</th>
+                            <th>Query Reason</th>
+                            <th>Query Text</th>
+                            <th>Response date</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var q in Model.Queries.OrderByDescending(qry => qry.CreatedOn))
+                        {
+                            <tr>
+                                <td>@Html.TextOrEmptyString(q.CreatedOn.ToCurrentCultureDateTime())</td>
+                                <td>@(q.Creator == null ? string.Empty : q.Creator.Name)</td>
+                                <td>@q.QueryReason.Reason</td>
+                                <td>@q.QueryText</td>
+                                <td>@Html.TextOrEmptyString(q.RespondedOn.ToCurrentCultureDateTime())</td>
+                                <td>@q.Response</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <div class="default-top-margin clear-fix">
+                    <hr />
+                    @Html.ActionLink("<< Back to Quotes in Query", "Index", "QuotesQueryPending")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

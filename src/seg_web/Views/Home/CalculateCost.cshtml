@@ -1,0 +1,80 @@
+﻿@using Booker.WebUI.Models
+@model List<CalculateCostModel>
+@{
+    ViewBag.Title = "Home - Calculate Cost";
+}
+
+<div class="home-wrapper">
+
+    <div class="container" id="CalculateCost">
+
+        <div class="row">
+            <br />
+
+            <div class="col-sm-8 pull-left ">
+                <h2 class="costCalculator">Cost Calculator</h2>
+                @using (Html.BeginForm(null, "Home", new { ViewBag.ReturnUrl }, FormMethod.Post, new { id = "costCalculatorForm", @class = "fancy-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <table class="table table-bordered table-responsive" id="servicesContainer">
+                        <thead>
+                            <tr>
+                                <th><strong>Service</strong></th>
+                                <th><strong>Tests & Inspections</strong></th>
+                                <th><strong>Choose</strong></th>
+                                <th><strong>Quantity</strong></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @Html.EditorForModel()
+                        </tbody>
+                    </table>
+
+                    @Html.ActionLink(String.Format("<< Return to {0} Home Page", Booker.Common.CompanyStrings.ShortName), "Index")
+                }
+            </div>
+            <div class="col-sm-3 col-xs-10 pull-left noMargin noPadding  well totalCostPanel">
+                <br /><br />
+                <table id="totalCostContainer" class="table-responsive">
+                    <tr>
+                        <td>
+                            <strong>Total Annual Cost (£)</strong>
+                        </td>
+                        <td colspan="2"><input id="AnnualCost" type="text" class="form-control cost" /></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Discounts (£)</strong></td>
+                        <td colspan="2"><input id="Discounts" type="text" class="form-control cost" /></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Monthly Cost (£)</strong></td>
+                        <td colspan="2"><input id="MonthlyCost" type="text" class="form-control cost" /></td>
+                    </tr>
+                </table>
+                <br />
+            </div>
+
+            <div class="col-sm-3 col-xs-8 default-top-margin well" id="discountContainer">
+
+                <h2>10 % Discount</h2> When you choose 3 or more services<br /><br />
+                <h2>20 % Discount </h2>On PAT and Emergency Lighting testing when taken together
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryvalcustom")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/costcalculator")
+
+}
+@section css {
+    @Styles.Render("~/Content/themes/base/css")
+
+    
+}

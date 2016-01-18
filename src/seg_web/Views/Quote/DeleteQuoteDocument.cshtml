@@ -1,0 +1,5 @@
+﻿@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.DeleteFileViewModel
+
+<h2 class="center-text">Delete @Html.QuoteDocumentTypeText(Model.UploadType)</h2>
+@Html.Partial("_DeleteUploadedFile", Model)

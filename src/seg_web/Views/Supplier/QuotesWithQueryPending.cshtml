@@ -1,0 +1,46 @@
+﻿@using Booker.WebUI.Helpers
+@model IEnumerable<Booker.WebUI.Models.PendingQueryQuoteModel>
+
+@{
+    ViewBag.Title = "Quotes with Query Pending";
+    ViewBag.MenuSection = "quotes-menu";
+}
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+
+                <table id="quote-query-pending" class="responsive clicktable" data-empty-table="There are no quotes with query pending">
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Quote Date</th>
+                            <th>Description</th>
+                            <th>Site</th>
+                            <th>Value (£)</th>
+                            <th>Quote Ref</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.ActionLink(string.Format("{0:0}", item.JobRef), "Query", "Quote", new { jobRef = item.JobRef, id = item.QuoteApprovalScenarioId }, null)</td>
+                                <td>@Html.TextOrEmptyString(@item.QuoteDate.ToShortDateString())</td>
+                                <td>@Html.TextOrEmptyString(@item.Description)</td>
+                                <td>@Html.TextOrEmptyString(@item.SiteName)</td>
+                                <td class="right-text">@Html.DecimalToCurrencyString(@item.QuoteValue)</td>
+                                <td>@Html.TextOrEmptyString(@item.QuoteRef)</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

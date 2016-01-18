@@ -1,0 +1,39 @@
+﻿@* Renders the Menu section when NOT in mobile mode. *@
+@using Booker.WebUI.Helpers
+@if (Request.IsAuthenticated)
+{
+    var menuItems = MenuHelper.BuildMenu(HttpContext.Current.User);
+
+    <div class="collapse navbar-collapse">
+
+        <ul class="nav navbar-nav hidden-xs">
+
+            @foreach (var menuItem in menuItems)
+            {
+                if (menuItem.SubMenuItems != null && menuItem.SubMenuItems.Any())
+                {
+                    <li class="dropdown">
+                        <a href="javascript:void(0)" class="dropdown-toggle" role="button" data-toggle="dropdown">@menuItem.DisplayName <b class="caret"></b></a>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var subMenuItem in menuItem.SubMenuItems)
+                            {
+                                <li><a href="@Url.Action(subMenuItem.Action, subMenuItem.Controller, subMenuItem.RouteValues)">@subMenuItem.DisplayName</a></li>
+                            }
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a href="@Url.Action(menuItem.Action, menuItem.Controller, menuItem.RouteValues)">@menuItem.DisplayName</a>
+                    </li>
+                }
+            }
+        </ul>
+
+        @Html.Partial("_LoginPartial")
+
+    </div>
+    
+    
+}

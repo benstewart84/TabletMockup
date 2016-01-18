@@ -1,0 +1,42 @@
+﻿@using Booker.WebUI.Helpers
+@model Booker.WebUI.Views.ViewModels.AccountsPayable.ChooseScannedDirectoryViewModel
+@{
+    ViewBag.Title = "Choose Scanned Invoice Document Directory";
+    ViewBag.MenuSection = "invoices-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+
+                <table id="choose-invoice-directory" class="responsive clicktable" data-empty-table="There are no date directories">
+                    <thead>
+                        <tr>
+                            <th>Directory Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.DateDirs)
+                        {
+                            <tr>
+                                <td>@Html.ActionLink(item.Name, "ChooseInvoiceDocument", "AccountsPayable", new { type = Model.DocumentType, woRef = Model.WorkOrderRef, dir = @item.Name, sc = Model.SupplierCode }, null)</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+
+                <div class="default-top-margin clear-fix" style="margin-top: 70px;">
+                    <hr />
+                    @Html.ActionLink("<< Back to Invoice", "Invoice", "AccountsPayable", new { woRef = Model.WorkOrderRef, sc = Model.SupplierCode }, null)
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

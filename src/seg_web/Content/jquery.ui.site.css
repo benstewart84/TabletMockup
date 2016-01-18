@@ -1,0 +1,20 @@
+﻿/* jQuery UI Site Resets */
+.ui-widget 
+{
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.ui-widget-header {
+    background-image: none;
+    background-color: #426889;
+}
+
+span.ui-dialog-title {
+    color: #fff;
+}
+
+.ui-datepicker-header {
+    background-image: inherit;
+    background-color: inherit;
+}

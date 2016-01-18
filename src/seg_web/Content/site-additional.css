@@ -1,0 +1,9 @@
+﻿/* First table after h2, want same margin as datatable */
+table.first {
+    margin-top: 16px;
+}
+
+/* Mimic MVC validation style */
+.has-error {
+    border: 1px solid #a94442 !important;
+}

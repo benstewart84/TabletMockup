@@ -1,0 +1,79 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+
+@model Booker.WebUI.Models.SupplierQuoteModel
+
+@{
+    ViewBag.Title = Model.IsQuoteGenerated ? "Edit Quote Details" : "Create Quote";
+    ViewBag.MenuSection = "quotes-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2>@ViewBag.Title</h2>
+                @if (Model.Job != null)
+                {
+                    <a id="JobDetails"></a>
+                    <table id="create-quote-summary" class="responsive default-bottom-margin">
+                        <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Date Requested</th>
+                            <th>Site</th>
+                            <th>Fault Service</th>
+                            <th>Notes</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>@string.Format("{0:0}", Model.Job.JobRef)</td>
+                            <td>@Html.TextOrEmptyString(Model.Job.DateRequested.ToCurrentCultureDateTime())</td>
+                            <td>@Html.TextOrEmptyString(Model.Job.SiteName)</td>
+                            <td>@Html.TextOrEmptyString(Model.Job.FaultServiceDescription)</td>
+                            <td>@Html.TextOrEmptyString(Model.Job.Notes)</td>
+                        </tr>
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                    if (Model.QuoteHeader.IsNew)
+                    {
+                        <p>
+                            To create a quote, complete the fields below and click on the Start Quote button.
+                        </p>
+                    }
+                    using (Html.BeginForm("EditQuoteHeader", "Quote", FormMethod.Post, new { @class = "input-form" }))
+                    {
+                        <a id="QuoteHeader"></a>
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(false, "We're missing some information:")
+                        @Html.Partial("_QuoteHeaderFields", Model.QuoteHeader)
+                    }
+
+                    <div class="default-top-margin clear-fix">
+                        <hr />
+                        @if (Model.IsQuoteGenerated)
+                        {
+                            @Html.ActionLink("<< Back to Quote", "Register", "Quote", new { jobRef = Model.QuoteHeader.JobRef }, null)
+                        }
+                        else
+                        {
+                            @Html.ActionLink("<< Back to Jobs Awaiting Quote", "JobsAwaitingQuote", "Supplier")
+                        }
+                    </div>
+
+                    @section scripts {
+                        @Scripts.Render("~/bundles/jqueryval")
+                        @Scripts.Render("~/bundles/jqueryui")
+                        @Scripts.Render("~/bundles/supplierhelpers")
+                    }
+                }
+                else
+                {
+                    <p>No job could be found to quote.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

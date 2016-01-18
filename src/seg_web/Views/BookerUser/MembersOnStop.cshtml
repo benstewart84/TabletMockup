@@ -1,0 +1,63 @@
+﻿@using Booker.Data.Entities
+@using Booker.WebUI.Helpers
+
+@model IEnumerable<Member>
+
+    @{
+        ViewBag.Title = "Members OnStop";
+        ViewBag.MenuSection = "home-menu";
+    }
+
+    <div class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <h2 class="tablesPage">Members on Stop</h2>
+                   
+                        <table id="members-stopped" class="responsive clicktable" data-empty-table="There are no members on stop at present!">
+                            <thead>
+                                <tr>
+                                    <th>Member Id</th>
+                                    <th>Member Number</th>
+                                    <th>Member Name</th>
+                                    <th>Status</th>
+                                    <th class="hidden">Follow Up</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+
+                                    <tr>
+                                        <td>@item.Id</td>
+                                        <td>@item.CustomerMemberNumber</td>
+                                        <td>@item.Name</td>
+                                        <td>On Stop</td>
+
+                                        <td class="hidden">@Html.ActionLink("Members Lookup", "MemberLookup", "BookerUser", new { @Id = item.Id }, null)</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                            <tfoot></tfoot>
+                        </table>
+                 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-10">
+                    <div class="row">
+                        <div class="pull-left default-top-margin clear-fix"> &nbsp;&nbsp;&nbsp;&nbsp; @Html.ActionLink("<< Back to Home", "Index") </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

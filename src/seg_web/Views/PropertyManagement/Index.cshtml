@@ -1,0 +1,44 @@
+﻿@model Booker.WebUI.Models.PropertyManagementHomePageModel
+
+@{
+    ViewBag.Title = "Home";
+    ViewBag.MenuSection = "home-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+
+                <h2>Welcome to the @Booker.Common.CompanyStrings.ShortName Portal</h2>
+
+                <table id="summary" class="clicktable">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th class="right-text">Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @CreatePropertyManagementActionRow("Jobs sent to Landlords", "AllLandlordJobs", Model.NumberOfJobsSentToLandlords)
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@helper CreatePropertyManagementActionRow(string linkText, string actionName, int num)
+{
+    <tr>
+        <td>@Html.ActionLink(linkText, actionName, "PropertyManagement")</td>
+        <td class="right-text">@string.Format("{0:0}", num)</td>
+    </tr>
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

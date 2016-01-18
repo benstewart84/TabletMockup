@@ -1,0 +1,38 @@
+﻿@using Booker.WebUI.Extensions
+@using Booker.WebUI.Helpers
+@{
+    ViewBag.Title = String.Format("Registration Successful - {0}", Booker.Common.CompanyStrings.ShortName);
+}
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>Thanks for Registering!</h1>
+                <div class="shield hidden-xs">
+                    <img src="~/Content/images/shield.png" />
+                </div>
+                <div>
+                    <p class="lead">
+                        An advisor will call you around the date and time you specified: <b>@Html.TextOrEmptyString(Convert.ToDateTime(Session["CallBackDateTime"].ToString()).ToCurrentCultureDateTime())</b>.
+                    </p>
+                    @*@{
+                        if (TempData.ContainsKey("InPilotArea") && bool.Parse(TempData["InPilotArea"].ToString()))
+                        {
+                            <p class="lead">
+                                An advisor will call you between the hours of your specified time: <b>@TempData["CallBackTime"].ToString()</b>.
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="lead">
+                                Sorry but your region is not currently covered by City. <br /><br />We're rolling out the service nationally, so when your area is covered, we'll let you know.
+                            </p>
+                        }
+                    }*@
+                </div>
+                <br/><br/>
+                <div>@Html.ActionLink(String.Format("<< Return to {0} Home Page", Booker.Common.CompanyStrings.ShortName), "Index")</div>
+            </div>
+        </div>
+    </div>
+</div>

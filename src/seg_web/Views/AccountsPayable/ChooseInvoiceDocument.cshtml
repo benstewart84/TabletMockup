@@ -1,0 +1,95 @@
+﻿@using Booker.WebUI.Helpers
+@model Booker.WebUI.Views.ViewModels.AccountsPayable.ChooseScannedInvoiceViewModel
+@{
+    ViewBag.Title = "Choose Scanned Invoice Document";
+    ViewBag.MenuSection = "invoices-menu";
+    var pdfUrl = "";
+    if (Model.CurrentDocumentIndex >= 0) {
+        pdfUrl = Url.Action("ShowInvoiceDocument", "AccountsPayable", new { documentIndex = Model.CurrentDocumentIndex });
+    }
+}
+
+<script>
+    $(document).ready(function () {
+        $('a').click(function (e) {
+            if ($(this).hasClass("doclink")) {
+                // prevent default behaviour
+                e.preventDefault();
+                // set document href as iframe source
+                $('iframe').attr('src', $(this).attr('href'));
+                // remove all doc selected from all td's
+                $("#choose-invoice-document>tbody>tr>td").removeClass("doc-checked");
+                // add doc selected to this links parent td
+                $(this).parent().addClass("doc-checked");
+            }
+        });
+    });
+</script>
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
+                <div>
+                    <table id="choose-invoice-document" class="responsive" data-empty-table="There are no scanned invoice files">
+                        <thead>
+                            <tr>
+                                <th>Scanned File Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                for (int i = 0; i < Model.DocumentFiles.Count; i++)
+                                {
+                                    var doc = Model.DocumentFiles[i];
+                                    var documentLink = Html.ActionLink(Model.DocumentFiles[i].Name, "ShowInvoiceDocument", "AccountsPayable", new { documentIndex = i }, new { @class = "doclink" });
+                                    var className = "";
+                                    if (Model.CurrentDocumentIndex == i)
+                                    {
+                                        className = "doc-checked";
+                                    }
+                                    <tr>
+                                        <td class="@className">@documentLink</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </div>
+                <div style="margin-top: 70px; margin-bottom: 20px;">
+                    @if (Model.DocumentFiles.Count() > 0)
+                    {
+                        using (Html.BeginForm("ChooseInvoiceDocument", "AccountsPayable", FormMethod.Post, null))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="submit" value="Add Selected Document" class="btn btn-primary" />
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="col-lg-8 col-md-9 col-sm-12 col-xs-12 doc-view">
+                @if (Model.DocumentFiles.Count() > 0) {
+                    <iframe src="@pdfUrl" scrolling="no" seamless="true"></iframe>
+                }
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="default-top-margin clear-fix">
+                    <hr />
+                    @Html.ActionLink("<< Back to Choose Scanned Invoice Directory", "ChooseInvoiceDirectory", "AccountsPayable", new { type = Model.DocumentType, woRef = Model.WorkOrderRef, sc = Model.SupplierCode }, null)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

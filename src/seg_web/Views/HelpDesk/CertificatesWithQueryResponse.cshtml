@@ -1,0 +1,42 @@
+﻿@using Booker.WebUI.Helpers
+@using Booker.Common
+@model IEnumerable<Booker.WebUI.Models.CertificatesWithQueryResponseModel>
+@{
+    ViewBag.Title = "Certificates with Query Response";
+    ViewBag.MenuSection = "certificates-menu";
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@ViewBag.Title</h2>
+                <table id="unverified-certificates" class="responsive clicktable" data-empty-table="There are no Certificates with Query Response.">
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Job Type</th>
+                            <th>Site</th>
+                            <th>Fault Service/PPM Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.ActionLink(string.Format("{0:0}", item.JobRef), "VerifyCertificate", "HelpDesk", new { jobRef = item.JobRef, status = CertificateStatus.QueryResponded }, null)</td>
+                                <td>@Html.TextOrEmptyString(@item.JobType)</td>
+                                <td>@Html.TextOrEmptyString(@item.SiteName)</td>
+                                <td>@Html.TextOrEmptyString(@item.FaultServiceDescription)</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Scripts.Render("~/bundles/jquerydatatables")
+}

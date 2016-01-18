@@ -1,0 +1,76 @@
+﻿@using Booker.WebUI.Enums
+@using Booker.WebUI.Helpers
+@using Booker.Common
+@using Booker.WebUI.Extensions
+@model Booker.WebUI.Models.JobsAwaitingClosedown.JobsAwaitingClosedownModel
+@{
+    ViewBag.Title = "Open Jobs for Store";
+}
+
+@section css {
+    @Styles.Render("~/Content/themes/base/css")
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">Open Jobs for Store</h2>
+                <table id="jobs-awaiting-closedown" class="responsive clicktable" data-empty-table="There are no open jobs for this store.">
+                    <thead>
+                        <tr>
+                            <th>Job Ref</th>
+                            <th>Fault Service</th>
+                            <th>Asset Location</th>
+                            <th>Fault Type</th>
+                            <th>Notes</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var job in Model.Jobs)
+                        {
+                            <tr>
+                                <td>@job.JobRef</td>
+                                <td>@job.FaultService</td>
+                                <td>@job.Location</td>
+                                <td>@job.FaultType</td>
+                                <td>@job.Notes</td>
+                                <td><button class="btn btn-success start-work" data-jobref="@job.JobRef">Start Work</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="NotesModal" tabindex="-1" role="dialog" aria-labelledby="ObservationLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="ObservationLabel">Notes</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+
+    @Scripts.Render("~/bundles/jobsawaitingclosedown")
+    @Scripts.Render("~/bundles/jquerydatatables")
+
+    <script>
+        $('.start-work').on('click', function (e) {
+            var jobRef = e.target.attributes['data-jobref'].value;
+            $.post('/SupplierTechnician/StartWork', {jobRef:jobRef}, function (data) {
+                console.log('data',data);
+            });
+        });
+    </script>
+}

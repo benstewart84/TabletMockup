@@ -1,0 +1,23 @@
+﻿@using Booker.WebUI.Helpers
+@model Booker.WebUI.Models.QuotesAwaitingApproval.ApproveQasViewModel
+@{
+    var actionType = "Approve";
+    if (User.IsInRole(UserManagementHelper.HelpDeskRoleName))
+    {
+        actionType = "Verify";
+    }
+}
+@using (Html.BeginForm("Approve", "QuotesAwaitingApproval", FormMethod.Post, new { style = "display: inline-block" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.ApproveQuoteApprovalScenarioId)
+
+    if (ViewBag.ReturnUrl != null)
+    {
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl"/>    
+    }
+    
+    @Html.ActionValidationSummary("Approve", true)
+
+    <input type="submit" value="@actionType Quote" class="btn btn-primary" />
+}

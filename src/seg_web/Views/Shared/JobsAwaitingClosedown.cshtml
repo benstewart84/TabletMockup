@@ -1,0 +1,118 @@
+﻿@using Booker.WebUI.Enums
+@using Booker.WebUI.Helpers
+@using Booker.Common
+@using Booker.WebUI.Extensions
+@model Booker.WebUI.Models.JobsAwaitingClosedown.JobsAwaitingClosedownModel
+@{
+    ViewBag.Title = Model.PageTitle;
+    ViewBag.MenuSection = Model.MenuSection;
+    var isSupplierUser = UserManagementHelper.IsUserInRole(UserRoleType.Supplier);
+    var dataEmptyMessage = "There are no " + Model.PageTitle.ToLower();
+}
+
+@section css {
+    @Styles.Render("~/Content/themes/base/css")
+}
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <h2 class="tablesPage">@Model.PageTitle</h2>
+                <table id="jobs-awaiting-closedown" class="responsive clicktable@(isSupplierUser ? " jobs-awaiting-closedown-supplier" : " jobs-awaiting-closedown-site")" data-empty-table="@dataEmptyMessage">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Job Ref</th>
+                            <th>Callout Time</th>
+                            <th>Days outstanding</th>
+                            <th>Site</th>
+                            <th>Fault Service</th>
+                            <th>Status</th>
+                            <th>Supplier Ref</th>
+                            <th>ETA</th>
+                            @if (!isSupplierUser)
+                            {
+                                if (!User.IsInRole(UserManagementHelper.SiteManagerRoleName) && !User.IsInRole(UserManagementHelper.MemberRoleName))
+                                {
+                                    <th>Supplier</th>
+                                }
+                                <th class="notes">Notes</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var job in Model.Jobs)
+                        {
+                            var cutOff = job.IsRefrigerationJob ? 2 : 7;
+
+                            var cssClass = job.CallOutDate.HasValue && (DateTime.Today - job.CallOutDate.Value.Date).Days > cutOff ? "warning-text" : "";
+
+                            var daysOutstanding = job.CallOutDate.HasValue ? (int?)(DateTime.Today - job.CallOutDate.Value.Date).Days : null;
+
+                            <tr class="@cssClass">
+                                <td>@job.JobTypeName</td>
+                                <td>@job.JobRef</td>
+                                <td>@Html.TextOrEmptyString(job.CallOutDate.ToCurrentCultureDateTime())</td>
+                                <td>@daysOutstanding</td>
+                                <td>@job.StoreName</td>
+                                <td>@job.FaultService</td>
+                                <td>@Model.MappedStatus(job)</td>
+                                <td>@job.ContractorReference</td>
+                                <td>
+                                    @if (job.ETAFinalCall && isSupplierUser)
+                                    {
+                                        <span class="glyphicon glyphicon-exclamation-sign" title="PPM ETA Final Call. Click to confirm." aria-hidden="true"></span>
+                                        @Html.ActionLink("Confirm", "ConfirmETAFinalCall", "Supplier", new { jobRef = job.JobRef }, new { style = "display: none" })
+                                    }
+                                    @if (isSupplierUser)
+                                    {
+                                        if (job.Status == HelpDeskFaultTimeType.OnSite)
+                                        {
+                                            @Html.ActionLink("Complete Job", "JobClosedown", "Supplier", new { jobRef = job.JobRef }, new { style = "display: none" })
+                                        }
+                                        else
+                                        {
+                                            @Html.ActionLink("Start Job", "StartJob", "Supplier", new { jobRef = job.JobRef }, new { style = "display: none" })
+                                        }
+                                    }
+                                    @Html.TextOrEmptyString(job.ContractorETADate.ToCurrentCultureShortDate() + " " + @job.ContractorETAWindow)
+                                    @*@job.ContractorETADate.ToApplicationDateAndTimeString()*@
+                                </td>
+                                @if (!isSupplierUser)
+                                {
+                                    if (!User.IsInRole(UserManagementHelper.SiteManagerRoleName) && !User.IsInRole(UserManagementHelper.MemberRoleName))
+                                    {
+                                        <td>@job.SupplierName</td>
+                                    }
+                                    <td class="notes">@job.Notes</td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="NotesModal" tabindex="-1" role="dialog" aria-labelledby="ObservationLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="ObservationLabel">Notes</h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+
+    @Scripts.Render("~/bundles/jobsawaitingclosedown")
+    @Scripts.Render("~/bundles/jquerydatatables")
+
+}
