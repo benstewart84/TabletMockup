@@ -1,8 +1,0 @@
-﻿@model decimal
-
-@{
-    var value = (decimal) @ViewData.TemplateInfo.FormattedModelValue;
-    var output = value.ToString("0.00");
-}
-
-<p id="TotalLineValue" class="readonly-textbox cost">@output</p>

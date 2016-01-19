@@ -1,8 +1,0 @@
-﻿@model decimal
-
-@{
-    var value = (decimal) @ViewData.TemplateInfo.FormattedModelValue;
-    var output = value.ToString("0.00");
-}
-
-<p id="VatAmount" class="readonly-textbox cost" data-rates-url="@Url.Action("VatRates", "Supplier")">@output</p>
